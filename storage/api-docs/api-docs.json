@@ -1,0 +1,47 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Ravy API",
+        "description": "Monolith modular HTTP API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/",
+            "description": "Current application host (see also APP_URL / L5_SWAGGER_CONST_HOST)"
+        }
+    ],
+    "paths": {
+        "/up": {
+            "get": {
+                "tags": [
+                    "System"
+                ],
+                "summary": "Application health (Laravel)",
+                "description": "OpenAPI root (PHP 8 attributes — required by L5-Swagger 11 / swagger-php 6 default scanner).\nDocBlock @OA annotations are not scanned unless you add DocBlockAnnotationFactory to config.",
+                "operationId": "healthUp",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "description": "Laravel Sanctum personal access token: `Bearer {token}`",
+                "bearerFormat": "Sanctum",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "System",
+            "description": "System"
+        }
+    ]
+}
