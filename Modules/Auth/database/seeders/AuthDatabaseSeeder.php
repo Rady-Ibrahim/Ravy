@@ -14,7 +14,7 @@ class AuthDatabaseSeeder extends Seeder
     {
         $defaultPassword = env('AUTH_SEED_PASSWORD', 'password');
 
-        User::query()->updateOrCreate(
+        $admin = User::query()->updateOrCreate(
             ['email' => env('AUTH_SEED_ADMIN_EMAIL', 'admin@ravy.test')],
             [
                 'name' => 'Admin',
@@ -26,7 +26,9 @@ class AuthDatabaseSeeder extends Seeder
             ]
         );
 
-        User::query()->updateOrCreate(
+        $admin->syncRoles(['super-admin']);
+
+        $customer = User::query()->updateOrCreate(
             ['email' => env('AUTH_SEED_CUSTOMER_EMAIL', 'customer@ravy.test')],
             [
                 'name' => 'Customer',
@@ -37,5 +39,7 @@ class AuthDatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
+
+        $customer->syncRoles([]);
     }
 }

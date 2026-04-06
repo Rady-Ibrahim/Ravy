@@ -8,7 +8,10 @@ class AuthServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/admin_permission_matrix.php',
+            'admin_permission_matrix'
+        );
     }
 
     public function boot(): void

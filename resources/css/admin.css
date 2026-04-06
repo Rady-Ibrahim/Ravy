@@ -6,22 +6,61 @@
 @theme {
     --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
     --font-display: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+    --color-brand-navy: #001b36;
+    --color-brand-navy-mid: #0c2744;
+    --color-brand-navy-soft: #143a5c;
+    --color-brand-cream: #f9f6ee;
+    --color-brand-cream-dark: #e8e2d4;
+    --color-brand-page: #f3f1eb;
 }
 
 @layer components {
     .admin-nav-link {
-        @apply flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-400 transition-colors;
+        @apply flex items-center gap-3 rounded-lg border border-transparent px-3 py-2.5 text-sm font-medium text-white/45 transition-colors;
     }
 
     .admin-nav-link:hover {
-        @apply bg-white/5 text-slate-100;
+        @apply bg-white/5 text-brand-cream/90;
     }
 
     .admin-nav-link--active {
-        @apply bg-amber-500/10 text-amber-400;
+        @apply border-brand-cream/20 bg-brand-cream/10 text-brand-cream;
     }
 
     .admin-card {
-        @apply rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-200/40;
+        @apply rounded-2xl border border-brand-navy/8 bg-white p-6 shadow-sm shadow-brand-navy/5;
+    }
+
+    /* عنوان قسم + وصف (مثل لوحة التحكم والصفحات الإدارية) */
+    .admin-section-head {
+        @apply text-base font-semibold tracking-tight text-brand-navy;
+        font-family: Outfit, ui-sans-serif, system-ui, sans-serif;
+    }
+
+    .admin-section-sub {
+        @apply mt-1 text-sm text-brand-navy/45;
+    }
+
+    .matrix-col-toggle.matrix-col-state-all {
+        @apply border-emerald-300 bg-emerald-50 text-emerald-900 ring-2 ring-emerald-500/30;
+    }
+
+    .matrix-col-toggle.matrix-col-state-partial {
+        @apply border-amber-300 bg-amber-50 text-amber-950 ring-2 ring-amber-500/35;
+    }
+
+    .matrix-col-toggle.matrix-col-state-none {
+        @apply border-slate-200 bg-white text-slate-600 ring-0;
+    }
+}
+
+/* طي الشريط الجانبي على الشاشات الكبيرة */
+@media (min-width: 1024px) {
+    html.admin-sidebar-collapsed #admin-sidebar {
+        transform: translateX(-100%) !important;
+    }
+
+    html.admin-sidebar-collapsed #admin-main {
+        margin-left: 0 !important;
     }
 }
