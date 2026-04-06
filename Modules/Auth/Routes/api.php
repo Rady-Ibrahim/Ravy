@@ -14,6 +14,12 @@ Route::middleware('api')->prefix('api/v1')->group(function () {
         Route::post('/verify', [AuthController::class, 'verify'])
             ->middleware('throttle:10,1');
 
+        Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
+            ->middleware('throttle:6,1');
+
+        Route::post('/reset-password', [AuthController::class, 'resetPassword'])
+            ->middleware('throttle:6,1');
+
         Route::middleware('auth:sanctum')->group(function () {
             Route::get('/profile', [AuthController::class, 'profile']);
             Route::post('/logout', [AuthController::class, 'logout']);

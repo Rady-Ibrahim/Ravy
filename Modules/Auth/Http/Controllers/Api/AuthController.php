@@ -5,11 +5,14 @@ namespace Modules\Auth\Http\Controllers\Api;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Auth\Http\Requests\Api\ForgotPasswordRequest;
 use Modules\Auth\Http\Requests\Api\LoginRequest;
 use Modules\Auth\Http\Requests\Api\RegisterRequest;
+use Modules\Auth\Http\Requests\Api\ResetPasswordRequest;
 use Modules\Auth\Http\Requests\Api\VerifyRequest;
 use Modules\Auth\Services\Api\LoginService;
 use Modules\Auth\Services\Api\LogoutService;
+use Modules\Auth\Services\Api\PasswordResetService;
 use Modules\Auth\Services\Api\RegisterService;
 
 class AuthController extends Controller
@@ -39,6 +42,16 @@ class AuthController extends Controller
         $logoutService->logout($request);
 
         return response()->json(['message' => __('Logged out successfully.')]);
+    }
+
+    public function forgotPassword(ForgotPasswordRequest $request, PasswordResetService $passwordResetService): JsonResponse
+    {
+        return response()->json($passwordResetService->requestCode($request));
+    }
+
+    public function resetPassword(ResetPasswordRequest $request, PasswordResetService $passwordResetService): JsonResponse
+    {
+        return response()->json($passwordResetService->reset($request));
     }
 
     public function profile(Request $request): JsonResponse
