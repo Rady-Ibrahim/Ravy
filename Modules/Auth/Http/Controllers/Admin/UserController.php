@@ -30,14 +30,14 @@ class UserController extends AdminController
             ->latest()
             ->paginate(15);
 
-        return view('admin.users.index', compact('users'));
+        return view('auth::admin.users.index', compact('users'));
     }
 
     public function create(): View
     {
         $roles = Role::query()->where('guard_name', 'web')->orderBy('name')->get();
 
-        return view('admin.users.create', compact('roles'));
+        return view('auth::admin.users.create', compact('roles'));
     }
 
     public function store(StoreUserRequest $request): RedirectResponse
@@ -53,7 +53,7 @@ class UserController extends AdminController
     {
         $roles = Role::query()->where('guard_name', 'web')->orderBy('name')->get();
 
-        return view('admin.users.edit', compact('user', 'roles'));
+        return view('auth::admin.users.edit', compact('user', 'roles'));
     }
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse

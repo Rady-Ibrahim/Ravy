@@ -41,7 +41,7 @@ class PermissionMatrixController extends AdminController
         $catalogPanelOpen = $request->user()?->can('admin.permissions.view')
             && $request->query('show') === 'catalog';
 
-        return view('admin.roles.matrix', [
+        return view('auth::admin.roles.matrix', [
             'modules' => $modules,
             'roles' => $roles,
             'catalogPermissions' => $catalogPermissions,

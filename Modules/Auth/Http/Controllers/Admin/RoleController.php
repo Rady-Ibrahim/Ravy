@@ -31,14 +31,14 @@ class RoleController extends AdminController
             ->orderBy('name')
             ->get();
 
-        return view('admin.roles.index', compact('roles'));
+        return view('auth::admin.roles.index', compact('roles'));
     }
 
     public function create(): View
     {
         $permissions = Permission::query()->where('guard_name', 'web')->orderBy('name')->get();
 
-        return view('admin.roles.create', compact('permissions'));
+        return view('auth::admin.roles.create', compact('permissions'));
     }
 
     public function store(StoreRoleRequest $request): RedirectResponse
@@ -57,7 +57,7 @@ class RoleController extends AdminController
         $permissions = Permission::query()->where('guard_name', 'web')->orderBy('name')->get();
         $role->load('permissions');
 
-        return view('admin.roles.edit', compact('role', 'permissions'));
+        return view('auth::admin.roles.edit', compact('role', 'permissions'));
     }
 
     public function update(UpdateRoleRequest $request, Role $role): RedirectResponse

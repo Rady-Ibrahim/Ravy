@@ -1,0 +1,16 @@
+{
+    "name": "modules/Product",
+    "description": "Product module",
+    "autoload": {
+        "psr-4": {
+            "Modules\\Product\\": "./"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Product\\Providers\\ProductServiceProvider"
+            ]
+        }
+    }
+}

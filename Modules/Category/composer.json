@@ -1,0 +1,16 @@
+{
+    "name": "modules/Category",
+    "description": "Category module",
+    "autoload": {
+        "psr-4": {
+            "Modules\\Category\\": "./"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Category\\Providers\\CategoryServiceProvider"
+            ]
+        }
+    }
+}

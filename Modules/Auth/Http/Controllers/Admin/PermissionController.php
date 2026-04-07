@@ -28,7 +28,7 @@ class PermissionController extends AdminController
             ->orderBy('name')
             ->paginate(30);
 
-        return view('admin.permissions.index', compact('permissions'));
+        return view('auth::admin.permissions.index', compact('permissions'));
     }
 
     public function create(): View|RedirectResponse
@@ -40,7 +40,7 @@ class PermissionController extends AdminController
             ]));
         }
 
-        return view('admin.permissions.create');
+        return view('auth::admin.permissions.create');
     }
 
     public function store(StorePermissionRequest $request): RedirectResponse
