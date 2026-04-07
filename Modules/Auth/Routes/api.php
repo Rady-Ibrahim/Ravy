@@ -14,6 +14,9 @@ Route::middleware('api')->prefix('api/v1')->group(function () {
         Route::post('/verify', [AuthController::class, 'verify'])
             ->middleware('throttle:10,1');
 
+        Route::post('/resend-verification-code', [AuthController::class, 'resendVerificationCode'])
+            ->middleware('throttle:6,1');
+
         Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
             ->middleware('throttle:6,1');
 

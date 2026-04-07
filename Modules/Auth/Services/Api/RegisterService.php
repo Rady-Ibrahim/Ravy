@@ -4,6 +4,7 @@ namespace Modules\Auth\Services\Api;
 
 use Illuminate\Validation\ValidationException;
 use Modules\Auth\Http\Requests\Api\RegisterRequest;
+use Modules\Auth\Http\Requests\Api\ResendVerificationCodeRequest;
 use Modules\Auth\Http\Requests\Api\VerifyRequest;
 use Modules\Auth\Models\User;
 
@@ -64,5 +65,33 @@ class RegisterService
         $user->forceFill(['email_verified_at' => now()])->save();
 
         return $user->fresh();
+    }
+
+    public function resendVerificationCode(ResendVerificationCodeRequest $request): array
+    {
+        $email = strtolower((string) $request->validated('email'));
+
+        $user = User::query()
+            ->where('email', $email)
+            ->where('type', '!=', 'admin')
+            ->first();
+
+        if (! $user) {
+            throw ValidationException::withMessages([
+                'email' => [__('User not found.')],
+            ]);
+        }
+
+        if ($user->email_verified_at !== null) {
+            throw ValidationException::withMessages([
+                'email' => [__('Email is already verified.')],
+            ]);
+        }
+
+        $this->otpService->issueForEmail($email);
+
+        return [
+            'message' => __('Verification code resent successfully.'),
+        ];
     }
 }

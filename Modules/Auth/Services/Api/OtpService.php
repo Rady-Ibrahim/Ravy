@@ -3,6 +3,8 @@
 namespace Modules\Auth\Services\Api;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
+use Modules\Auth\Mail\OtpCodeMail;
 
 class OtpService
 {
@@ -12,6 +14,7 @@ class OtpService
     {
         $code = (string) random_int(100000, 999999);
         Cache::put($this->cacheKey($email, $purpose), $code, now()->addMinutes(self::TTL_MINUTES));
+        Mail::to($email)->send(new OtpCodeMail($code, $purpose));
     }
 
     public function verifyEmailCode(string $email, string $code, string $purpose = 'verify'): bool

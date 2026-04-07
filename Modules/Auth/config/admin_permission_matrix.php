@@ -80,5 +80,37 @@ return [
                 ],
             ],
         ],
+        [
+            'key' => 'catalog_categories',
+            'label' => 'Catalog - Categories',
+            'groups' => [
+                [
+                    'key' => 'categories',
+                    'label' => 'Categories',
+                    'permissions' => [
+                        ['name' => 'admin.categories.view', 'label' => 'View'],
+                        ['name' => 'admin.categories.create', 'label' => 'Create'],
+                        ['name' => 'admin.categories.edit', 'label' => 'Edit'],
+                        ['name' => 'admin.categories.delete', 'label' => 'Delete'],
+                    ],
+                ],
+            ],
+        ],
+        [
+            'key' => 'catalog_products',
+            'label' => 'Catalog - Products',
+            'groups' => [
+                [
+                    'key' => 'products',
+                    'label' => 'Products',
+                    'permissions' => [
+                        ['name' => 'admin.products.view', 'label' => 'View'],
+                        ['name' => 'admin.products.create', 'label' => 'Create'],
+                        ['name' => 'admin.products.edit', 'label' => 'Edit'],
+                        ['name' => 'admin.products.delete', 'label' => 'Delete'],
+                    ],
+                ],
+            ],
+        ],
     ],
 ];

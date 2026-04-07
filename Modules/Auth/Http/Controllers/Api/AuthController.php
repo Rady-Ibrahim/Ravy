@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Auth\Http\Requests\Api\ForgotPasswordRequest;
 use Modules\Auth\Http\Requests\Api\LoginRequest;
+use Modules\Auth\Http\Requests\Api\ResendVerificationCodeRequest;
 use Modules\Auth\Http\Requests\Api\RegisterRequest;
 use Modules\Auth\Http\Requests\Api\ResetPasswordRequest;
 use Modules\Auth\Http\Requests\Api\VerifyRequest;
@@ -35,6 +36,11 @@ class AuthController extends Controller
             'message' => __('Email verified successfully.'),
             'user' => $user,
         ]);
+    }
+
+    public function resendVerificationCode(ResendVerificationCodeRequest $request, RegisterService $registerService): JsonResponse
+    {
+        return response()->json($registerService->resendVerificationCode($request));
     }
 
     public function logout(Request $request, LogoutService $logoutService): JsonResponse

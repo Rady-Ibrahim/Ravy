@@ -34,6 +34,12 @@ class LoginService
             ]);
         }
 
+        if ($user->email_verified_at === null) {
+            throw ValidationException::withMessages([
+                'email' => [__('Please verify your email first.')],
+            ]);
+        }
+
         $token = $user->createToken('api')->plainTextToken;
 
         return [
