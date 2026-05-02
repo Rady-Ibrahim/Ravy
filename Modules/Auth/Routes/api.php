@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Auth\Http\Controllers\Api\AuthController;
+use Modules\Auth\Http\Controllers\Api\SocialAuthController;
 
 Route::middleware('api')->prefix('api/v1')->group(function () {
     Route::prefix('auth')->group(function () {
@@ -21,6 +22,9 @@ Route::middleware('api')->prefix('api/v1')->group(function () {
             ->middleware('throttle:6,1');
 
         Route::post('/reset-password', [AuthController::class, 'resetPassword'])
+            ->middleware('throttle:6,1');
+
+        Route::post('/social/{provider}', [SocialAuthController::class, 'login'])
             ->middleware('throttle:6,1');
 
         Route::middleware('auth:sanctum')->group(function () {
