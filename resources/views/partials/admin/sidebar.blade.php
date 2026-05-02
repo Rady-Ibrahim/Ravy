@@ -6,6 +6,8 @@
 
     $mainNav = [
         ['label' => __('Dashboard'), 'route' => 'admin.dashboard', 'icon' => 'home', 'permission' => null],
+        ['label' => __('Users'), 'route' => 'admin.users.index', 'icon' => 'users', 'permission' => 'admin.users.view'],
+
         [
             'label' => __('Roles'),
             'icon' => 'shield',
@@ -16,6 +18,7 @@
             ],
         ],
         ['label' => __('Categories'), 'route' => 'admin.categories.index', 'icon' => 'layers', 'permission' => 'admin.categories.view'],
+
         [
             'label' => __('Products'),
             'icon' => 'box',
@@ -28,7 +31,6 @@
                 ['label' => __('Sizes'), 'route' => 'admin.attributes.sizes', 'permission' => 'admin.products.view'],
             ],
         ],
-        ['label' => __('Users'), 'route' => 'admin.users.index', 'icon' => 'users', 'permission' => 'admin.users.view'],
 
     ];
 @endphp

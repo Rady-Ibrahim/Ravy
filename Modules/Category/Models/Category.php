@@ -26,6 +26,8 @@ class Category extends Model
         'icon',
         'is_active',
         'sort_order',
+        'show_in_sidebar',
+        'menu_order',
         'meta_title',
         'meta_description',
         'products_count',
@@ -33,6 +35,7 @@ class Category extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
+        'show_in_sidebar' => 'boolean',
     ];
 
     public function parent(): BelongsTo

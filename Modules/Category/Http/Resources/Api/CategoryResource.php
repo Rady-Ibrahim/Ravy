@@ -19,12 +19,30 @@ class CategoryResource extends JsonResource
             'image' => $this->image,
             'banner' => $this->banner,
             'icon' => $this->icon,
+            'image_url' => $this->mediaUrl($this->image),
+            'banner_url' => $this->mediaUrl($this->banner),
+            'icon_url' => $this->mediaUrl($this->icon),
             'is_active' => (bool) $this->is_active,
+            'show_in_sidebar' => (bool) $this->show_in_sidebar,
             'sort_order' => (int) ($this->sort_order ?? 0),
+            'menu_order' => (int) ($this->menu_order ?? 0),
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,
             'products_count' => (int) ($this->products_count ?? 0),
+            'children_count' => $this->whenCounted('children'),
+            'children' => $this->when(
+                $this->relationLoaded('children'),
+                fn (): array => CategoryResource::collection($this->children)->resolve()
+            ),
         ];
     }
-}
 
+    private function mediaUrl(?string $path): ?string
+    {
+        if (! $path) {
+            return null;
+        }
+
+        return asset('storage/'.$path);
+    }
+}
