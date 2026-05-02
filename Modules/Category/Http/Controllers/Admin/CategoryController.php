@@ -26,14 +26,20 @@ class CategoryController extends AdminController
 
     public function index(): View
     {
-        $categories = Category::query()->with('parent')->latest('id')->paginate(15);
+        $categories = Category::query()
+            ->with('parent')
+            ->withCount('products')
+            ->orderBy('menu_order')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->paginate(15);
 
         return view('category::admin.categories.index', compact('categories'));
     }
 
     public function create(): View
     {
-        $parents = Category::query()->orderBy('name')->get();
+        $parents = $this->buildHierarchyOptions();
 
         return view('category::admin.categories.create', compact('parents'));
     }
@@ -50,10 +56,7 @@ class CategoryController extends AdminController
 
     public function edit(Category $category): View
     {
-        $parents = Category::query()
-            ->whereKeyNot($category->id)
-            ->orderBy('name')
-            ->get();
+        $parents = $this->buildHierarchyOptions($category->id);
 
         return view('category::admin.categories.edit', compact('category', 'parents'));
     }
@@ -104,13 +107,50 @@ class CategoryController extends AdminController
         $index = 1;
 
         while (Category::query()
-            ->when($ignoreId, fn ($q) => $q->whereKeyNot($ignoreId))
+            ->when($ignoreId, fn($q) => $q->whereKeyNot($ignoreId))
             ->where('slug', $slug)
-            ->exists()) {
+            ->exists()
+        ) {
             $slug = "{$base}-{$index}";
             $index++;
         }
 
         return $slug;
+    }
+
+    /**
+     * Build hierarchical options for parent category dropdown
+     * with breadcrumb-style labels (e.g., "Women > Clothing > Dresses")
+     */
+    private function buildHierarchyOptions(?int $excludeId = null): array
+    {
+        $categories = Category::query()
+            ->when($excludeId, fn($q) => $q->whereKeyNot($excludeId))
+            ->with('parent')
+            ->orderBy('menu_order')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+
+        return $categories->mapWithKeys(function (Category $category) {
+            $path = $this->buildCategoryPath($category);
+            return [$category->id => $path];
+        })->toArray();
+    }
+
+    /**
+     * Build breadcrumb path for a category (e.g., "Women > Clothing")
+     */
+    private function buildCategoryPath(Category $category): string
+    {
+        $breadcrumbs = [];
+        $current = $category;
+
+        while ($current) {
+            array_unshift($breadcrumbs, $current->name);
+            $current = $current->parent;
+        }
+
+        return implode(' > ', $breadcrumbs);
     }
 }

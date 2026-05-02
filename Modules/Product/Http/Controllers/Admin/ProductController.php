@@ -30,9 +30,46 @@ class ProductController extends AdminController
 
     public function index(Request $request): View
     {
-        $products = Product::query()
+        $query = Product::query()
             ->with(['brand', 'primaryCategory', 'categories', 'images'])
-            ->withCount('variants')
+            ->withCount(['variants', 'images']);
+
+        // Search by name/slug
+        if ($search = $request->string('q')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by status
+        if ($request->filled('is_active')) {
+            $query->where('is_active', (bool) $request->integer('is_active'));
+        }
+
+        // Filter by featured
+        if ($request->filled('is_featured')) {
+            $query->where('is_featured', (bool) $request->integer('is_featured'));
+        }
+
+        // Filter by new
+        if ($request->filled('is_new')) {
+            $query->where('is_new', (bool) $request->integer('is_new'));
+        }
+
+        // Filter by brand
+        if ($request->filled('brand_id')) {
+            $query->where('brand_id', $request->integer('brand_id'));
+        }
+
+        // Filter by category
+        if ($request->filled('category_id')) {
+            $query->whereHas('categories', function ($q) {
+                $q->where('category_id', request()->integer('category_id'));
+            });
+        }
+
+        $products = $query
             ->latest('id')
             ->paginate((int) $request->integer('per_page', 20));
 
@@ -123,9 +160,10 @@ class ProductController extends AdminController
         $index = 1;
 
         while (Product::query()
-            ->when($ignoreId, fn ($q) => $q->whereKeyNot($ignoreId))
+            ->when($ignoreId, fn($q) => $q->whereKeyNot($ignoreId))
             ->where('slug', $slug)
-            ->exists()) {
+            ->exists()
+        ) {
             $slug = "{$base}-{$index}";
             $index++;
         }

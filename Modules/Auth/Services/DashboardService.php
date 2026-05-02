@@ -1,0 +1,117 @@
+<?php
+
+namespace Modules\Auth\Services;
+
+use Modules\Category\Models\Category;
+use Modules\Product\Models\Product;
+
+class DashboardService
+{
+    /**
+     * Get dashboard KPI data
+     */
+    public function getKpiData(): array
+    {
+        return [
+            'customers' => 0, // CRM module pending
+            'products' => $this->getTotalProducts(),
+            'orders' => 0, // Orders module pending
+            'revenue' => 0, // Orders module pending
+        ];
+    }
+
+    /**
+     * Get orders overview data
+     */
+    public function getOrdersOverview(): array
+    {
+        return [
+            'total' => 0, // Orders module pending
+            'pending' => 0,
+            'confirmed' => 0,
+            'processed' => 0,
+            'shipped' => 0,
+        ];
+    }
+
+    /**
+     * Get top categories by products count
+     */
+    public function getTopCategories(int $limit = 5): array
+    {
+        return Category::query()
+            ->withCount('products')
+            ->where('is_active', true)
+            ->orderByDesc('products_count')
+            ->limit($limit)
+            ->get()
+            ->map(fn(Category $cat) => [
+                'label' => $cat->name,
+                'value' => $cat->products_count,
+                'pct' => 0, // Will be calculated if we have revenue data
+            ])
+            ->toArray();
+    }
+
+    /**
+     * Get products statistics
+     */
+    public function getProductsStats(): array
+    {
+        return [
+            'total' => Product::count(),
+            'active' => Product::where('is_active', true)->count(),
+            'inactive' => Product::where('is_active', false)->count(),
+            'featured' => Product::where('is_featured', true)->count(),
+            'new' => Product::where('is_new', true)->count(),
+            'total_views' => Product::sum('views_count') ?? 0,
+            'avg_score' => Product::average('score') ?? 0,
+        ];
+    }
+
+    /**
+     * Get total products count
+     */
+    private function getTotalProducts(): int
+    {
+        return Product::count();
+    }
+
+    /**
+     * Get category distribution data
+     */
+    public function getCategoryDistribution(): array
+    {
+        return Category::query()
+            ->withCount('products')
+            ->where('is_active', true)
+            ->orderByDesc('products_count')
+            ->get()
+            ->map(fn(Category $cat) => [
+                'name' => $cat->name,
+                'count' => $cat->products_count,
+            ])
+            ->toArray();
+    }
+
+    /**
+     * Get recently added products
+     */
+    public function getRecentProducts(int $limit = 10): array
+    {
+        return Product::query()
+            ->with(['brand', 'primaryCategory'])
+            ->where('is_active', true)
+            ->latest('created_at')
+            ->limit($limit)
+            ->get()
+            ->map(fn(Product $product) => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'slug' => $product->slug,
+                'category' => $product->primaryCategory?->name,
+                'created_at' => $product->created_at,
+            ])
+            ->toArray();
+    }
+}
