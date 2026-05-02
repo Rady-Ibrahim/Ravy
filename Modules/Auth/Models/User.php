@@ -4,9 +4,11 @@ namespace Modules\Auth\Models;
 
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Modules\Product\Models\Product;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -25,7 +27,7 @@ class User extends Authenticatable
     }
 
     protected $fillable = [
-        'name', 'email', 'password', 'phone', 'type', 'status',
+        'first_name', 'last_name', 'name', 'email', 'password', 'phone', 'type', 'status',
     ];
 
     protected $hidden = [
@@ -48,5 +50,11 @@ class User extends Authenticatable
     public function scopeIsCustomer($query)
     {
         return $query->where('type', 'customer');
+    }
+
+    public function wishlistProducts(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'wishlists')
+            ->withTimestamps();
     }
 }

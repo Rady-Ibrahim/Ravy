@@ -19,8 +19,14 @@ class RegisterService
      */
     public function register(RegisterRequest $request): array
     {
+        $firstName = trim((string) $request->validated('first_name'));
+        $lastName = trim((string) $request->validated('last_name'));
+        $generatedFullName = trim($firstName.' '.$lastName);
+
         $user = User::query()->create([
-            'name' => $request->validated('name'),
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'name' => $request->validated('name') ?: $generatedFullName,
             'email' => $request->validated('email'),
             'password' => $request->validated('password'),
             'phone' => $request->validated('phone'),

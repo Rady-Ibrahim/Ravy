@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Auth\Models\User;
 use Modules\Category\Models\Category;
 use Modules\Product\Models\Brand;
 use Modules\Product\Models\CategoryAttribute;
@@ -168,5 +169,66 @@ class ProductApiTest extends TestCase
 
         $this->assertSame(1, $response->json('views_count'));
         $this->assertSame(1, (int) $product->fresh()->views_count);
+    }
+
+    public function test_wishlist_toggle_endpoint_attaches_and_detaches_product(): void
+    {
+        $category = Category::query()->create(['name' => 'Accessories', 'slug' => 'accessories']);
+        $product = Product::query()->create([
+            'name' => 'Bracelet',
+            'slug' => 'bracelet',
+            'primary_category_id' => $category->id,
+            'is_active' => true,
+        ]);
+        $product->categories()->attach($category->id);
+
+        $user = User::factory()->create();
+        $token = $user->createToken('test')->plainTextToken;
+
+        $attachResponse = $this->withToken($token)->postJson('/api/v1/products/bracelet/wishlist');
+        $attachResponse->assertOk()->assertJsonPath('attached', true);
+        $this->assertDatabaseHas('wishlists', [
+            'user_id' => $user->id,
+            'product_id' => $product->id,
+        ]);
+
+        $detachResponse = $this->withToken($token)->postJson('/api/v1/products/bracelet/wishlist');
+        $detachResponse->assertOk()->assertJsonPath('attached', false);
+        $this->assertDatabaseMissing('wishlists', [
+            'user_id' => $user->id,
+            'product_id' => $product->id,
+        ]);
+    }
+
+    public function test_wishlist_endpoint_returns_product_card_resource_collection(): void
+    {
+        $category = Category::query()->create(['name' => 'Bags', 'slug' => 'bags']);
+        $brand = Brand::query()->create(['name' => 'Gucci', 'slug' => 'gucci', 'is_active' => true]);
+
+        $product = Product::query()->create([
+            'name' => 'Leather Bag',
+            'slug' => 'leather-bag',
+            'primary_category_id' => $category->id,
+            'brand_id' => $brand->id,
+            'is_active' => true,
+            'is_new' => true,
+            'min_price' => 1200,
+            'max_price' => 1500,
+        ]);
+        $product->categories()->attach($category->id);
+
+        $user = User::factory()->create();
+        $user->wishlistProducts()->attach($product->id);
+        $token = $user->createToken('test')->plainTextToken;
+
+        $response = $this->withToken($token)->getJson('/api/v1/wishlist');
+
+        $response->assertOk()
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => ['id', 'name', 'slug', 'is_new', 'is_featured', 'min_price', 'max_price', 'brand', 'image'],
+                ],
+            ])
+            ->assertJsonPath('data.0.slug', 'leather-bag');
     }
 }

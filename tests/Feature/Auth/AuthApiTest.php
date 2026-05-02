@@ -40,7 +40,8 @@ class AuthApiTest extends TestCase
         Mail::fake();
 
         $response = $this->postJson('/api/v1/auth/register', [
-            'name' => 'Customer One',
+            'first_name' => 'Customer',
+            'last_name' => 'One',
             'email' => 'newcustomer@example.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
@@ -48,7 +49,10 @@ class AuthApiTest extends TestCase
 
         $response
             ->assertStatus(201)
-            ->assertJsonPath('user.email', 'newcustomer@example.com');
+            ->assertJsonPath('user.email', 'newcustomer@example.com')
+            ->assertJsonPath('user.first_name', 'Customer')
+            ->assertJsonPath('user.last_name', 'One')
+            ->assertJsonPath('user.name', 'Customer One');
 
         Mail::assertSent(OtpCodeMail::class, function (OtpCodeMail $mail): bool {
             return $mail->hasTo('newcustomer@example.com') && $mail->purpose === 'verify';
@@ -94,5 +98,58 @@ class AuthApiTest extends TestCase
         $this->assertDatabaseHas('permissions', ['name' => 'admin.products.create', 'guard_name' => 'web']);
         $this->assertDatabaseHas('permissions', ['name' => 'admin.products.edit', 'guard_name' => 'web']);
         $this->assertDatabaseHas('permissions', ['name' => 'admin.products.delete', 'guard_name' => 'web']);
+    }
+
+    public function test_profile_returns_user_resource_shape(): void
+    {
+        $user = User::factory()->create([
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'name' => 'John Doe',
+        ]);
+        $token = $user->createToken('test')->plainTextToken;
+
+        $response = $this->withToken($token)->getJson('/api/v1/auth/profile');
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('first_name', 'John')
+            ->assertJsonPath('last_name', 'Doe')
+            ->assertJsonPath('name', 'John Doe')
+            ->assertJsonPath('email', $user->email)
+            ->assertJsonPath('type', 'customer');
+    }
+
+    public function test_customer_can_update_profile_data(): void
+    {
+        $user = User::factory()->create([
+            'first_name' => 'Old',
+            'last_name' => 'Name',
+            'name' => 'Old Name',
+            'phone' => null,
+        ]);
+        $token = $user->createToken('test')->plainTextToken;
+
+        $response = $this->withToken($token)->patchJson('/api/v1/auth/profile', [
+            'first_name' => 'New',
+            'last_name' => 'Customer',
+            'phone' => '01001234567',
+        ]);
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('message', 'Profile updated successfully.')
+            ->assertJsonPath('user.first_name', 'New')
+            ->assertJsonPath('user.last_name', 'Customer')
+            ->assertJsonPath('user.name', 'New Customer')
+            ->assertJsonPath('user.phone', '01001234567');
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'first_name' => 'New',
+            'last_name' => 'Customer',
+            'name' => 'New Customer',
+            'phone' => '01001234567',
+        ]);
     }
 }

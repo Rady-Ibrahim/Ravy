@@ -25,6 +25,7 @@ Route::middleware('api')->prefix('api/v1')->group(function () {
 
         Route::middleware('auth:sanctum')->group(function () {
             Route::get('/profile', [AuthController::class, 'profile']);
+            Route::patch('/profile', [AuthController::class, 'updateProfile']);
             Route::post('/logout', [AuthController::class, 'logout']);
         });
     });

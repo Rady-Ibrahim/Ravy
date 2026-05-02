@@ -4,6 +4,7 @@ namespace Modules\Product\Http\Controllers\Api;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Product\Http\Requests\Api\IndexProductRequest;
 use Modules\Product\Http\Resources\Api\ProductCardResource;
@@ -67,6 +68,44 @@ class ProductController extends Controller
         return response()->json([
             'message' => __('Product views updated successfully.'),
             'views_count' => (int) $product->fresh()->views_count,
+        ]);
+    }
+
+    public function toggleWishlist(Request $request, string $slug): JsonResponse
+    {
+        $user = $request->user();
+
+        $product = Product::query()
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        $alreadyAttached = $user->wishlistProducts()
+            ->where('products.id', $product->id)
+            ->exists();
+
+        if ($alreadyAttached) {
+            $user->wishlistProducts()->detach($product->id);
+        } else {
+            $user->wishlistProducts()->attach($product->id);
+        }
+
+        return response()->json([
+            'attached' => ! $alreadyAttached,
+        ]);
+    }
+
+    public function wishlist(Request $request): JsonResponse
+    {
+        $products = $request->user()
+            ->wishlistProducts()
+            ->where('products.is_active', true)
+            ->with(['brand', 'images'])
+            ->latest('wishlists.created_at')
+            ->get();
+
+        return response()->json([
+            'data' => ProductCardResource::collection($products)->resolve(),
         ]);
     }
 
