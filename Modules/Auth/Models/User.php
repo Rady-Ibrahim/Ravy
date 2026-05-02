@@ -5,9 +5,12 @@ namespace Modules\Auth\Models;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Modules\Orders\Models\Cart;
+use Modules\Orders\Models\Order;
 use Modules\Product\Models\Product;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -56,5 +59,15 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Product::class, 'wishlists')
             ->withTimestamps();
+    }
+
+    public function carts(): HasMany
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 }

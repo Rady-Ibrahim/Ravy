@@ -1,0 +1,16 @@
+{
+    "name": "modules/Orders",
+    "description": "Orders module",
+    "autoload": {
+        "psr-4": {
+            "Modules\\Orders\\": "./"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Orders\\Providers\\OrdersServiceProvider"
+            ]
+        }
+    }
+}
