@@ -47,4 +47,11 @@ return [
         'redirect' => env('FACEBOOK_REDIRECT_URI'),
     ],
 
+    'paymob' => [
+        'api_key' => env('PAYMOB_API_KEY'),
+        'integration_id' => env('PAYMOB_INTEGRATION_ID'),
+        'hmac_secret' => env('PAYMOB_HMAC_SECRET'),
+        'base_url' => env('PAYMOB_BASE_URL', 'https://accept.paymob.com/api'),
+    ],
+
 ];

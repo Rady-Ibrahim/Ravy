@@ -25,7 +25,8 @@ class CheckoutRequest extends FormRequest
             'shipping_address.postal_code' => ['nullable', 'string', 'max:32'],
             'packaging_option' => ['nullable', 'string', 'max:50'],
             'notes' => ['nullable', 'string', 'max:1500'],
-            'payment_method' => ['required', 'in:cod,online_placeholder'],
+            'payment_method' => ['required', 'in:cod,paymob'],
+            'payment_context' => ['nullable', 'array'],
         ];
     }
 }

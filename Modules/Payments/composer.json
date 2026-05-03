@@ -1,0 +1,16 @@
+{
+    "name": "modules/Payments",
+    "description": "Payments module",
+    "autoload": {
+        "psr-4": {
+            "Modules\\Payments\\": "./"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Payments\\Providers\\PaymentsServiceProvider"
+            ]
+        }
+    }
+}

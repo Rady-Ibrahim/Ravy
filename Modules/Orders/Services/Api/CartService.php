@@ -10,6 +10,7 @@ use Modules\Orders\Models\CartItem;
 use Modules\Orders\Models\Order;
 use Modules\Product\Models\Product;
 use Modules\Product\Models\Variant;
+use Modules\Payments\Services\PaymentService;
 
 class CartService
 {
@@ -167,6 +168,7 @@ class CartService
                 'discount_amount' => $totals['discount_amount'],
                 'grand_total' => $totals['grand_total'],
                 'currency' => 'EGP',
+                'payment_method' => $payload['payment_method'] ?? null,
                 'shipping_address_snapshot' => $payload['shipping_address'],
                 'packaging_option' => $payload['packaging_option'] ?? null,
                 'notes' => $payload['notes'] ?? null,
@@ -194,6 +196,22 @@ class CartService
 
             $cart->update(['status' => 'converted']);
             $this->getOrCreateActiveCart($user);
+
+            // Initiate payment if payment method is provided
+            if (isset($payload['payment_method']) && $payload['payment_method'] !== 'cod') {
+                $paymentService = new PaymentService();
+                $paymentResponse = $paymentService->initiatePayment(
+                    $order,
+                    $payload['payment_method'],
+                    $payload['payment_context'] ?? []
+                );
+
+                if (!$paymentResponse->success) {
+                    throw ValidationException::withMessages([
+                        'payment' => ['Payment initiation failed: ' . $paymentResponse->message],
+                    ]);
+                }
+            }
 
             return $order->load('items');
         });
