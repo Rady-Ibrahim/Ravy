@@ -7,6 +7,8 @@
     $mainNav = [
         ['label' => __('Dashboard'), 'route' => 'admin.dashboard', 'icon' => 'home', 'permission' => null],
         ['label' => __('Users'), 'route' => 'admin.users.index', 'icon' => 'users', 'permission' => 'admin.users.view'],
+        ['label' => __('Orders'), 'route' => 'admin.orders.index', 'icon' => 'shopping-cart', 'permission' => null],
+        ['label' => __('Shipping Rates'), 'route' => 'admin.governorates.index', 'icon' => 'truck', 'permission' => null],
 
         [
             'label' => __('Roles'),
@@ -139,6 +141,15 @@
                 @elseif ($item['icon'] === 'box')
                     <svg class="h-5 w-5 shrink-0 opacity-80" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-8.25 4.5-8.25-4.5m16.5 0L12 3 3.75 7.5m16.5 0v9l-8.25 4.5-8.25-4.5v-9m8.25 4.5v9" />
+                    </svg>
+                @elseif ($item['icon'] === 'shopping-cart')
+                    <svg class="h-5 w-5 shrink-0 opacity-80" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                    </svg>
+                @elseif ($item['icon'] === 'truck')
+                    <svg class="h-5 w-5 shrink-0 opacity-80" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0V15.75a1.5 1.5 0 013 0v3zM13.5 18.75a1.5 1.5 0 01-3 0V15.75a1.5 1.5 0 013 0v3zM18.75 18.75a1.5 1.5 0 01-3 0V15.75a1.5 1.5 0 013 0v3z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.5.42-3.375 1.125m1.875-1.125c1.355 0 2.5.42 3.375 1.125m-6.75 0c.375.375.75.75 1.125 1.125m4.5 0c.375-.375.75-.75 1.125-1.125M12 8.25v-1.5m0 1.5c.375 0 .75.075 1.125.225M12 8.25c.375 0 .75-.075 1.125-.225M12 8.25c.375.375.75.75 1.125 1.125m-2.25 0C10.5 9.75 9.75 10.5 9.75 12v1.5m0-1.5c0-1.5 1.5-3 3-3m0 3c1.5 0 3 1.5 3 3v1.5m0-1.5c0-1.5-1.5-3-3-3" />
                     </svg>
                 @endif
                 {{ $item['label'] }}

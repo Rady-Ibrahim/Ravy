@@ -3,6 +3,7 @@
 namespace Modules\Orders\Services\Api;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\ValidationException;
 use Modules\Auth\Models\User;
 use Modules\Orders\Models\Cart;
@@ -21,17 +22,37 @@ class CartService
         );
     }
 
-    public function getActiveCartWithRelations(User $user): Cart
+    public function getOrCreateGuestCart(string $guestId): Cart
     {
-        return $this->getOrCreateActiveCart($user)->load([
+        return Cart::query()->firstOrCreate(
+            ['guest_id' => $guestId, 'status' => 'active']
+        );
+    }
+
+    public function getCart(?User $user = null, ?string $guestId = null): Cart
+    {
+        if ($user) {
+            return $this->getOrCreateActiveCart($user);
+        }
+
+        if ($guestId) {
+            return $this->getOrCreateGuestCart($guestId);
+        }
+
+        throw new \InvalidArgumentException('Either user or guest_id must be provided');
+    }
+
+    public function getActiveCartWithRelations(?User $user = null, ?string $guestId = null): Cart
+    {
+        return $this->getCart($user, $guestId)->load([
             'items.product',
             'items.variant',
         ]);
     }
 
-    public function addItem(User $user, array $payload): Cart
+    public function addItem(?User $user = null, array $payload = [], ?string $guestId = null): Cart
     {
-        $cart = $this->getOrCreateActiveCart($user);
+        $cart = $this->getCart($user, $guestId);
 
         $product = Product::query()
             ->whereKey($payload['product_id'])
@@ -91,12 +112,12 @@ class CartService
             ]);
         }
 
-        return $this->getActiveCartWithRelations($user);
+        return $this->getActiveCartWithRelations($user, $guestId);
     }
 
-    public function updateItemQty(User $user, int $itemId, int $qty): Cart
+    public function updateItemQty(?User $user = null, int $itemId, int $qty, ?string $guestId = null): Cart
     {
-        $cart = $this->getOrCreateActiveCart($user);
+        $cart = $this->getCart($user, $guestId);
         $item = $cart->items()->whereKey($itemId)->firstOrFail();
 
         if ($item->variant && $item->variant->stock < $qty) {
@@ -110,31 +131,45 @@ class CartService
             'line_total' => $qty * (float) $item->unit_price,
         ]);
 
-        return $this->getActiveCartWithRelations($user);
+        return $this->getActiveCartWithRelations($user, $guestId);
     }
 
-    public function removeItem(User $user, int $itemId): Cart
+    public function removeItem(?User $user = null, int $itemId, ?string $guestId = null): Cart
     {
-        $cart = $this->getOrCreateActiveCart($user);
+        $cart = $this->getCart($user, $guestId);
         $item = $cart->items()->whereKey($itemId)->firstOrFail();
         $item->delete();
 
-        return $this->getActiveCartWithRelations($user);
+        return $this->getActiveCartWithRelations($user, $guestId);
     }
 
-    public function clear(User $user): Cart
+    public function clear(?User $user = null, ?string $guestId = null): Cart
     {
-        $cart = $this->getOrCreateActiveCart($user);
+        $cart = $this->getCart($user, $guestId);
         $cart->items()->delete();
 
-        return $this->getActiveCartWithRelations($user);
+        return $this->getActiveCartWithRelations($user, $guestId);
     }
 
-    public function totals(Cart $cart): array
+    public function totals(Cart $cart, ?int $governorateId = null): array
     {
         $subtotal = (float) $cart->items->sum(fn ($item) => (float) $item->line_total);
-        $shipping = $subtotal > 0 ? 0.0 : 0.0;
+        $shipping = 0.0;
         $discount = 0.0;
+
+        // Calculate shipping based on governorate
+        if ($governorateId && $subtotal > 0) {
+            $governorate = Governorate::find($governorateId);
+            if ($governorate && $governorate->is_active) {
+                $shipping = (float) $governorate->shipping_cost;
+                
+                // Check for free shipping threshold
+                $freeShippingThreshold = config('orders.free_shipping_threshold', 0);
+                if ($freeShippingThreshold > 0 && $subtotal >= $freeShippingThreshold) {
+                    $shipping = 0.0;
+                }
+            }
+        }
 
         return [
             'subtotal' => $subtotal,
@@ -144,9 +179,9 @@ class CartService
         ];
     }
 
-    public function checkout(User $user, array $payload): Order
+    public function checkout(?User $user = null, array $payload = [], ?string $guestId = null): Order
     {
-        $cart = $this->getActiveCartWithRelations($user);
+        $cart = $this->getActiveCartWithRelations($user, $guestId);
 
         if ($cart->items->isEmpty()) {
             throw ValidationException::withMessages([
@@ -154,21 +189,25 @@ class CartService
             ]);
         }
 
-        return DB::transaction(function () use ($user, $cart, $payload) {
+        return DB::transaction(function () use ($user, $cart, $payload, $guestId) {
             $cart->load(['items.product', 'items.variant']);
-            $totals = $this->totals($cart);
+            $governorateId = $payload['governorate_id'] ?? null;
+            $totals = $this->totals($cart, $governorateId);
 
             $order = Order::query()->create([
                 'order_number' => $this->generateOrderNumber(),
-                'user_id' => $user->id,
+                'user_id' => $user?->id,
+                'governorate_id' => $governorateId,
                 'status' => 'pending_payment',
                 'payment_status' => 'unpaid',
                 'subtotal' => $totals['subtotal'],
                 'shipping_amount' => $totals['shipping_amount'],
+                'shipping_calculated_cost' => $totals['shipping_amount'],
                 'discount_amount' => $totals['discount_amount'],
                 'grand_total' => $totals['grand_total'],
                 'currency' => 'EGP',
                 'payment_method' => $payload['payment_method'] ?? null,
+                'source' => $payload['source'] ?? null,
                 'shipping_address_snapshot' => $payload['shipping_address'],
                 'packaging_option' => $payload['packaging_option'] ?? null,
                 'notes' => $payload['notes'] ?? null,
@@ -195,7 +234,11 @@ class CartService
             }
 
             $cart->update(['status' => 'converted']);
-            $this->getOrCreateActiveCart($user);
+            if ($user) {
+                $this->getOrCreateActiveCart($user);
+            } elseif ($guestId) {
+                $this->getOrCreateGuestCart($guestId);
+            }
 
             // Initiate payment if payment method is provided
             if (isset($payload['payment_method']) && $payload['payment_method'] !== 'cod') {

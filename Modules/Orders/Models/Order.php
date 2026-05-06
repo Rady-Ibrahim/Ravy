@@ -12,10 +12,16 @@ class Order extends Model
     protected $fillable = [
         'order_number',
         'user_id',
+        'governorate_id',
         'status',
         'payment_status',
+        'payment_method',
+        'payment_reference',
+        'source',
+        'tracking_number',
         'subtotal',
         'shipping_amount',
+        'shipping_calculated_cost',
         'discount_amount',
         'grand_total',
         'currency',
@@ -27,6 +33,7 @@ class Order extends Model
     protected $casts = [
         'subtotal' => 'decimal:2',
         'shipping_amount' => 'decimal:2',
+        'shipping_calculated_cost' => 'decimal:2',
         'discount_amount' => 'decimal:2',
         'grand_total' => 'decimal:2',
         'shipping_address_snapshot' => 'array',
@@ -37,8 +44,18 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function governorate(): BelongsTo
+    {
+        return $this->belongsTo(Governorate::class);
+    }
+
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function paymentTransactions()
+    {
+        return $this->hasMany(\Modules\Payments\Models\PaymentTransaction::class, 'order_id');
     }
 }
