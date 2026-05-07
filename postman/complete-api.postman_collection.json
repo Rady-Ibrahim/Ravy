@@ -2,7 +2,7 @@
     "info": {
         "_postman_id": "3c7e7d8e-ec53-4d4c-98cc-95a67cc8c03e",
         "name": "Ravy Complete API",
-        "description": "Complete collection for all frontend API endpoints including Auth, Categories, and Products.",
+        "description": "Complete collection for all frontend API endpoints including Auth, Categories, Products, Orders, and Payments.",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "item": [
@@ -326,6 +326,424 @@
                             }
                         }
                     ]
+                }
+            ]
+        },
+        {
+            "name": "Orders (Auth Required)",
+            "item": [
+                {
+                    "name": "Cart",
+                    "item": [
+                        {
+                            "name": "Get Cart",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/cart",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "cart"
+                                    ]
+                                },
+                                "description": "Returns user's active cart with items."
+                            }
+                        },
+                        {
+                            "name": "Add Item to Cart",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"product_id\": 1,\n  \"variant_id\": 5,\n  \"qty\": 2\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/cart/items",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "cart",
+                                        "items"
+                                    ]
+                                },
+                                "description": "Adds product to cart or updates quantity if exists."
+                            }
+                        },
+                        {
+                            "name": "Update Item Quantity",
+                            "request": {
+                                "method": "PUT",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"qty\": 3\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/cart/items/1",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "cart",
+                                        "items",
+                                        "1"
+                                    ]
+                                },
+                                "description": "Updates quantity of a cart item."
+                            }
+                        },
+                        {
+                            "name": "Remove Item from Cart",
+                            "request": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/cart/items/1",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "cart",
+                                        "items",
+                                        "1"
+                                    ]
+                                },
+                                "description": "Removes item from cart."
+                            }
+                        },
+                        {
+                            "name": "Clear Cart",
+                            "request": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/cart",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "cart"
+                                    ]
+                                },
+                                "description": "Removes all items from cart."
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Checkout",
+                    "item": [
+                        {
+                            "name": "Get Checkout Summary",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/checkout/summary",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "checkout",
+                                        "summary"
+                                    ]
+                                },
+                                "description": "Returns cart totals and available packaging options."
+                            }
+                        },
+                        {
+                            "name": "Place Order (COD)",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"shipping_address\": {\n    \"first_name\": \"أحمد\",\n    \"last_name\": \"محمد\",\n    \"email\": \"ahmed@example.com\",\n    \"phone\": \"01234567890\",\n    \"country\": \"مصر\",\n    \"city\": \"القاهرة\",\n    \"address_line_1\": \"شارع الجامعة 15\"\n  },\n  \"payment_method\": \"cod\",\n  \"packaging_option\": \"eco\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/checkout/place-order",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "checkout",
+                                        "place-order"
+                                    ]
+                                },
+                                "description": "Creates order with Cash on Delivery payment method."
+                            }
+                        },
+                        {
+                            "name": "Place Order (Paymob)",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"shipping_address\": {\n    \"first_name\": \"أحمد\",\n    \"last_name\": \"محمد\",\n    \"email\": \"ahmed@example.com\",\n    \"phone\": \"01234567890\",\n    \"country\": \"مصر\",\n    \"city\": \"القاهرة\",\n    \"address_line_1\": \"شارع الجامعة 15\"\n  },\n  \"payment_method\": \"paymob\",\n  \"payment_context\": {\n    \"billing_data\": {\n      \"first_name\": \"أحمد\",\n      \"last_name\": \"محمد\",\n      \"email\": \"ahmed@example.com\",\n      \"phone\": \"01234567890\"\n    }\n  }\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/checkout/place-order",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "checkout",
+                                        "place-order"
+                                    ]
+                                },
+                                "description": "Creates order with Paymob payment method and initiates payment."
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Payments (Auth Required)",
+            "item": [
+                {
+                    "name": "Get Payment Methods",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/payments/methods",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "payments",
+                                "methods"
+                            ]
+                        },
+                        "description": "Returns list of available payment methods."
+                    }
+                },
+                {
+                    "name": "Initiate Payment",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"order_id\": 456,\n  \"payment_method\": \"paymob\",\n  \"context\": {\n    \"billing_data\": {\n      \"first_name\": \"أحمد\",\n      \"last_name\": \"محمد\",\n      \"email\": \"ahmed@example.com\",\n      \"phone\": \"01234567890\"\n    }\n  }\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/payments/initiate",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "payments",
+                                "initiate"
+                            ]
+                        },
+                        "description": "Initiates payment for an existing order."
+                    }
+                },
+                {
+                    "name": "Get Payment Status",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/payments/status/456",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "payments",
+                                "status",
+                                "456"
+                            ]
+                        },
+                        "description": "Returns payment status for an order."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Webhooks (No Auth)",
+            "item": [
+                {
+                    "name": "Paymob Webhook",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"type\": \"TRANSACTION\",\n  \"obj\": \"{\\\"success\\\": true, \\\"id\\\": \\\"987654321\\\", \\\"order\\\": {\\\"id\\\": 987654321}}\",\n  \"hmac\": \"calculated_hmac_signature\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/webhooks/paymob",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "webhooks",
+                                "paymob"
+                            ]
+                        },
+                        "description": "Paymob payment status notification endpoint."
+                    }
                 }
             ]
         }

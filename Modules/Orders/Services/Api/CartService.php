@@ -9,6 +9,7 @@ use Modules\Auth\Models\User;
 use Modules\Orders\Models\Cart;
 use Modules\Orders\Models\CartItem;
 use Modules\Orders\Models\Order;
+use Modules\Orders\Models\PromoCode;
 use Modules\Product\Models\Product;
 use Modules\Product\Models\Variant;
 use Modules\Payments\Services\PaymentService;
@@ -151,11 +152,24 @@ class CartService
         return $this->getActiveCartWithRelations($user, $guestId);
     }
 
-    public function totals(Cart $cart, ?int $governorateId = null): array
+    public function totals(Cart $cart, ?int $governorateId = null, ?string $promoCode = null): array
     {
         $subtotal = (float) $cart->items->sum(fn ($item) => (float) $item->line_total);
         $shipping = 0.0;
         $discount = 0.0;
+
+        // Calculate promo code discount
+        if ($promoCode) {
+            $promoCodeModel = PromoCode::query()
+                ->where('code', strtoupper($promoCode))
+                ->valid()
+                ->notUsedUp()
+                ->first();
+
+            if ($promoCodeModel && $promoCodeModel->isValid()) {
+                $discount = $promoCodeModel->calculateDiscount($subtotal);
+            }
+        }
 
         // Calculate shipping based on governorate
         if ($governorateId && $subtotal > 0) {
@@ -192,7 +206,22 @@ class CartService
         return DB::transaction(function () use ($user, $cart, $payload, $guestId) {
             $cart->load(['items.product', 'items.variant']);
             $governorateId = $payload['governorate_id'] ?? null;
-            $totals = $this->totals($cart, $governorateId);
+            $promoCode = $payload['promo_code'] ?? null;
+            $totals = $this->totals($cart, $governorateId, $promoCode);
+
+            // Handle promo code
+            $promoCodeModel = null;
+            if ($promoCode && $totals['discount_amount'] > 0) {
+                $promoCodeModel = PromoCode::query()
+                    ->where('code', strtoupper($promoCode))
+                    ->valid()
+                    ->notUsedUp()
+                    ->first();
+
+                if ($promoCodeModel && $promoCodeModel->isValid()) {
+                    $promoCodeModel->incrementUsage();
+                }
+            }
 
             $order = Order::query()->create([
                 'order_number' => $this->generateOrderNumber(),
@@ -211,6 +240,8 @@ class CartService
                 'shipping_address_snapshot' => $payload['shipping_address'],
                 'packaging_option' => $payload['packaging_option'] ?? null,
                 'notes' => $payload['notes'] ?? null,
+                'promo_code_id' => $promoCodeModel?->id,
+                'promo_code' => $promoCodeModel?->code,
             ]);
 
             foreach ($cart->items as $item) {

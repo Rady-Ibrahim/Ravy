@@ -30,6 +30,7 @@ class CheckoutRequest extends FormRequest
             'notes' => ['nullable', 'string', 'max:1500'],
             'payment_method' => ['required', 'in:cod,paymob'],
             'payment_context' => ['nullable', 'array'],
+            'promo_code' => ['nullable', 'string', 'max:50'],
         ];
     }
 }

@@ -33,6 +33,8 @@ class CheckoutController extends Controller
     {
         $user = $request->user();
         $guestId = $user ? null : $this->getGuestId($request);
+        $promoCode = $request->get('promo_code');
+        $governorateId = $request->get('governorate_id');
         
         $cart = $service->getActiveCartWithRelations($user, $guestId);
 
@@ -41,7 +43,7 @@ class CheckoutController extends Controller
                 'cart_id' => $cart->id,
                 'guest_id' => $guestId,
                 'items_count' => $cart->items->count(),
-                'totals' => $service->totals($cart),
+                'totals' => $service->totals($cart, $governorateId, $promoCode),
                 'packaging_options' => [
                     ['id' => 'eco', 'label' => 'Eco packaging'],
                 ],

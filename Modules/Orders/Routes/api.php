@@ -5,6 +5,7 @@ use Modules\Orders\Http\Controllers\Api\CartController;
 use Modules\Orders\Http\Controllers\Api\CheckoutController;
 use Modules\Orders\Http\Controllers\Api\OrderController;
 use Modules\Orders\Http\Controllers\Api\GovernorateController;
+use Modules\Orders\Http\Controllers\Api\PromoCodeController;
 
 // Cart routes - accessible for both authenticated and guest users
 Route::middleware(['api'])->prefix('api/v1')->group(function () {
@@ -26,6 +27,12 @@ Route::middleware(['api'])->prefix('api/v1')->group(function () {
 Route::middleware(['api'])->prefix('api/v1')->group(function () {
     Route::get('/checkout/summary', [CheckoutController::class, 'summary']);
     Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->middleware('throttle:10,1');
+});
+
+// Promo codes - accessible for both authenticated and guest users
+Route::middleware(['api'])->prefix('api/v1')->group(function () {
+    Route::post('/promo-codes/validate', [PromoCodeController::class, 'validate'])->middleware('throttle:10,1');
+    Route::get('/promo-codes/details', [PromoCodeController::class, 'details'])->middleware('throttle:10,1');
 });
 
 // Orders - require authentication

@@ -28,6 +28,8 @@ class Order extends Model
         'shipping_address_snapshot',
         'packaging_option',
         'notes',
+        'promo_code_id',
+        'promo_code',
     ];
 
     protected $casts = [
@@ -57,5 +59,10 @@ class Order extends Model
     public function paymentTransactions()
     {
         return $this->hasMany(\Modules\Payments\Models\PaymentTransaction::class, 'order_id');
+    }
+
+    public function promoCode(): BelongsTo
+    {
+        return $this->belongsTo(PromoCode::class);
     }
 }
