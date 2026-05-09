@@ -66,6 +66,7 @@ class VariantService
             'stock',
             'is_active',
             'attributes_hash',
+            'image',
         ]));
 
         $variant->attributeValues()->sync($attributeValueIds);

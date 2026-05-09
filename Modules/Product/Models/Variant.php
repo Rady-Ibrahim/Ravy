@@ -19,6 +19,7 @@ class Variant extends Model
         'stock',
         'is_active',
         'attributes_hash',
+        'image',
     ];
 
     protected $casts = [

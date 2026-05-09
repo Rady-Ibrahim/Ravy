@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="mx-auto max-w-4xl">
-        <form action="{{ route('admin.products.variants.store', $product) }}" method="post" class="admin-card space-y-5">
+        <form action="{{ route('admin.products.variants.store', $product) }}" method="post" enctype="multipart/form-data" class="admin-card space-y-5">
             @csrf
             @include('product::admin.variants.partials.form', ['variant' => null])
             <div class="flex items-center gap-3">

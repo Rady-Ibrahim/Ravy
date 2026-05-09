@@ -21,6 +21,22 @@
     </div>
 </div>
 
+<div class="grid gap-4 sm:grid-cols-2">
+    <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">{{ __('Variant Image') }}</label>
+        <input type="file" name="image" accept="image/*" class="w-full rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400">
+        @error('image')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+        @if ($variant?->image)
+            <div class="mt-2">
+                <img src="{{ asset('storage/' . $variant->image) }}" alt="{{ __('Variant Image') }}" class="h-20 w-20 rounded-lg object-cover">
+                <p class="mt-1 text-xs text-slate-500">{{ __('Current image') }}</p>
+            </div>
+        @endif
+    </div>
+</div>
+
 <div>
     <label class="mb-2 block text-sm font-medium text-slate-700">{{ __('Variant attributes (e.g. color, size)') }}</label>
     <div class="max-h-72 space-y-3 overflow-y-auto rounded-xl border border-slate-200 p-3">

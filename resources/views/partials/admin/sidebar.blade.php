@@ -7,32 +7,18 @@
     $mainNav = [
         ['label' => __('Dashboard'), 'route' => 'admin.dashboard', 'icon' => 'home', 'permission' => null],
         ['label' => __('Users'), 'route' => 'admin.users.index', 'icon' => 'users', 'permission' => 'admin.users.view'],
+        ['label' => __('Customers'), 'route' => 'admin.customers.index', 'icon' => 'user-group', 'permission' => 'admin.customers.view'],
+        ['label' => __('Roles'), 'route' => 'admin.roles.index', 'icon' => 'shield', 'permission' => 'admin.roles.view'],
         ['label' => __('Orders'), 'route' => 'admin.orders.index', 'icon' => 'shopping-cart', 'permission' => null],
+
+        ['label' => __('Categories'), 'route' => 'admin.categories.index', 'icon' => 'layers', 'permission' => 'admin.categories.view'],
+        ['label' => __('Products'), 'route' => 'admin.products.index', 'icon' => 'box', 'permission' => 'admin.products.view'],
+        ['label' => __('Brands'), 'route' => 'admin.brands.index', 'icon' => 'tag', 'permission' => 'admin.products.view'],
+        ['label' => __('Colors'), 'route' => 'admin.colors.index', 'icon' => 'palette', 'permission' => 'admin.products.view'],
+        ['label' => __('Sizes'), 'route' => 'admin.sizes.index', 'icon' => 'ruler', 'permission' => 'admin.products.view'],
+        
         ['label' => __('Shipping Rates'), 'route' => 'admin.governorates.index', 'icon' => 'truck', 'permission' => null],
 
-        [
-            'label' => __('Roles'),
-            'icon' => 'shield',
-            'permission' => null,
-            'children' => [
-                ['label' => __('Roles'), 'route' => 'admin.roles.index', 'permission' => 'admin.roles.view'],
-                ['label' => __('Permission matrix'), 'route' => 'admin.roles.matrix', 'permission' => 'admin.matrix.manage'],
-            ],
-        ],
-        ['label' => __('Categories'), 'route' => 'admin.categories.index', 'icon' => 'layers', 'permission' => 'admin.categories.view'],
-
-        [
-            'label' => __('Products'),
-            'icon' => 'box',
-            'permission' => null,
-            'children' => [
-                ['label' => __('All products'), 'route' => 'admin.products.index', 'permission' => 'admin.products.view'],
-                ['label' => __('Brands'), 'route' => 'admin.brands.index', 'permission' => 'admin.products.view'],
-                ['label' => __('Attributes'), 'route' => 'admin.attributes.index', 'permission' => 'admin.products.view'],
-                ['label' => __('Colors'), 'route' => 'admin.attributes.colors', 'permission' => 'admin.products.view'],
-                ['label' => __('Sizes'), 'route' => 'admin.attributes.sizes', 'permission' => 'admin.products.view'],
-            ],
-        ],
 
     ];
 @endphp
@@ -150,6 +136,26 @@
                     <svg class="h-5 w-5 shrink-0 opacity-80" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0V15.75a1.5 1.5 0 013 0v3zM13.5 18.75a1.5 1.5 0 01-3 0V15.75a1.5 1.5 0 013 0v3zM18.75 18.75a1.5 1.5 0 01-3 0V15.75a1.5 1.5 0 013 0v3z" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.5.42-3.375 1.125m1.875-1.125c1.355 0 2.5.42 3.375 1.125m-6.75 0c.375.375.75.75 1.125 1.125m4.5 0c.375-.375.75-.75 1.125-1.125M12 8.25v-1.5m0 1.5c.375 0 .75.075 1.125.225M12 8.25c.375 0 .75-.075 1.125-.225M12 8.25c.375.375.75.75 1.125 1.125m-2.25 0C10.5 9.75 9.75 10.5 9.75 12v1.5m0-1.5c0-1.5 1.5-3 3-3m0 3c1.5 0 3 1.5 3 3v1.5m0-1.5c0-1.5-1.5-3-3-3" />
+                    </svg>
+                @elseif ($item['icon'] === 'user-group')
+                    <svg class="h-5 w-5 shrink-0 opacity-80" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 9.045 9.045 0 003.741.479m9.998-3.199l.001-.031c0-.225-.012-.447-.037-.666A11.945 11.945 0 0112 3.75c-2.17 0-4.207.576-5.963 1.584A6.063 6.063 0 006 6.719m12 0a5.971 5.971 0 00-.941 3.197M6 6.719a5.971 5.971 0 00-.941 3.197m0 0a3 3 0 004.682 2.72 9.094 9.094 0 003.741-.479m0 0a3 3 0 004.682-2.72m-9.423 0a3 3 0 00-4.682 2.72" />
+                    </svg>
+                @elseif ($item['icon'] === 'shield')
+                    <svg class="h-5 w-5 shrink-0 opacity-80" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                    </svg>
+                @elseif ($item['icon'] === 'tag')
+                    <svg class="h-5 w-5 shrink-0 opacity-80" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.644 1.621l4.543 4.543c.646.646 1.523.646 2.169 0l4.543-4.543A2.25 2.25 0 0018.75 7.5V5.25a2.25 2.25 0 00-2.25-2.25h-4.684zM12.75 9.75a.75.75 0 000 1.5h6a.75.75 0 000-1.5h-6z" />
+                    </svg>
+                @elseif ($item['icon'] === 'palette')
+                    <svg class="h-5 w-5 shrink-0 opacity-80" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 005.304 0l6.718-6.718a3.75 3.75 0 00-5.304-5.304l-6.718 6.718a3.75 3.75 0 000 5.304l6.718-6.718a3.75 3.75 0 00-5.304 0zM21.75 12a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h4.5a.75.75 0 000-1.5z" />
+                    </svg>
+                @elseif ($item['icon'] === 'ruler')
+                    <svg class="h-5 w-5 shrink-0 opacity-80" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 4.5h17.25M3.375 4.5a1.125 1.125 0 011.125-1.125m0 3.75h17.25a1.125 1.125 0 001.125-1.125m-17.25 0a1.125 1.125 0 011.125-1.125m0 3.75v-4.5m0 4.5a1.125 1.125 0 001.125-1.125m-1.125-1.125v-4.5" />
                     </svg>
                 @endif
                 {{ $item['label'] }}

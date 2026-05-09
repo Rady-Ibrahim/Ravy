@@ -26,6 +26,7 @@ class UserController extends AdminController
     public function index(): View
     {
         $users = User::query()
+            ->isAdmin()
             ->with('roles')
             ->latest()
             ->paginate(15);

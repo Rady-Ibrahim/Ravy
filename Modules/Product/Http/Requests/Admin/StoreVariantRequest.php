@@ -19,6 +19,7 @@ class StoreVariantRequest extends FormRequest
             'compare_at_price' => ['nullable', 'numeric', 'min:0'],
             'stock' => ['required', 'integer', 'min:0'],
             'is_active' => ['sometimes', 'boolean'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'attribute_value_ids' => ['required', 'array', 'min:1'],
             'attribute_value_ids.*' => ['integer', 'exists:category_attribute_values,id'],
         ];

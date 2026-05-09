@@ -6,6 +6,7 @@ use Modules\Auth\Http\Controllers\Admin\DashboardController;
 use Modules\Auth\Http\Controllers\Admin\PermissionController;
 use Modules\Auth\Http\Controllers\Admin\PermissionMatrixController;
 use Modules\Auth\Http\Controllers\Admin\RoleController;
+use Modules\Auth\Http\Controllers\Admin\CustomerController;
 use Modules\Auth\Http\Controllers\Admin\UserController;
 
 Route::middleware('web')->get('/', function () {
@@ -32,6 +33,7 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
     Route::put('roles/matrix', [PermissionMatrixController::class, 'update'])->name('roles.matrix.update');
 
     Route::resource('users', UserController::class)->except(['show']);
+    Route::resource('customers', CustomerController::class)->except(['create', 'store']);
     Route::resource('roles', RoleController::class);
     Route::resource('permissions', PermissionController::class)->only(['index', 'create', 'store']);
 });

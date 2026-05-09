@@ -48,6 +48,11 @@ class VariantController extends AdminController
         unset($data['attribute_value_ids']);
         $data['product_id'] = $product->id;
 
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('variants', 'public');
+        }
+
         try {
             $this->service->create($data, $attributeValueIds);
         } catch (QueryException $e) {
@@ -77,6 +82,18 @@ class VariantController extends AdminController
         $data = $request->validated();
         $attributeValueIds = $data['attribute_value_ids'];
         unset($data['attribute_value_ids']);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($variant->image) {
+                $oldImagePath = public_path('storage/' . $variant->image);
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+            }
+            $data['image'] = $request->file('image')->store('variants', 'public');
+        }
 
         try {
             $this->service->update($variant, $data, $attributeValueIds);

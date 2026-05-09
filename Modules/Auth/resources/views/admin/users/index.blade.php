@@ -2,8 +2,8 @@
 
 @section('title', __('Users'))
 
-@section('page_title', __('Users'))
-@section('page_subtitle', __('Manage accounts and admin roles.'))
+@section('page_title', __('Admin Users'))
+@section('page_subtitle', __('Manage admin accounts and their roles.'))
 
 @section('content')
     <div class="mx-auto max-w-7xl">
@@ -22,7 +22,6 @@
                         <tr>
                             <th class="px-4 py-3">{{ __('Name') }}</th>
                             <th class="px-4 py-3">{{ __('Email') }}</th>
-                            <th class="px-4 py-3">{{ __('Type') }}</th>
                             <th class="px-4 py-3">{{ __('Status') }}</th>
                             <th class="px-4 py-3">{{ __('Roles') }}</th>
                             <th class="px-4 py-3 text-end">{{ __('Actions') }}</th>
@@ -33,18 +32,13 @@
                             <tr class="bg-white hover:bg-slate-50/50">
                                 <td class="px-4 py-3 font-medium text-slate-900">{{ $user->name }}</td>
                                 <td class="px-4 py-3 text-slate-600">{{ $user->email }}</td>
-                                <td class="px-4 py-3 capitalize text-slate-600">{{ $user->type }}</td>
                                 <td class="px-4 py-3 capitalize">
                                     <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset {{ $user->status === 'active' ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20' : 'bg-slate-100 text-slate-600 ring-slate-500/10' }}">
                                         {{ $user->status }}
                                     </span>
                                 </td>
                                 <td class="px-4 py-3 text-slate-600">
-                                    @if ($user->type === 'admin')
-                                        {{ $user->roles->pluck('name')->join(', ') ?: '—' }}
-                                    @else
-                                        —
-                                    @endif
+                                    {{ $user->roles->pluck('name')->join(', ') ?: '—' }}
                                 </td>
                                 <td class="px-4 py-3 text-end">
                                     <div class="flex justify-end gap-2">
@@ -65,7 +59,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-4 py-8 text-center text-slate-500">{{ __('No users found.') }}</td>
+                                <td colspan="5" class="px-4 py-8 text-center text-slate-500">{{ __('No admin users found.') }}</td>
                             </tr>
                         @endforelse
                     </tbody>

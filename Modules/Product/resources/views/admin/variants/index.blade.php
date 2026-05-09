@@ -17,6 +17,7 @@
                     <thead class="border-b border-slate-200 bg-slate-50/80 text-xs font-semibold uppercase tracking-wide text-slate-500">
                         <tr>
                             <th class="px-4 py-3">{{ __('SKU') }}</th>
+                            <th class="px-4 py-3">{{ __('Image') }}</th>
                             <th class="px-4 py-3">{{ __('Attributes') }}</th>
                             <th class="px-4 py-3">{{ __('Price') }}</th>
                             <th class="px-4 py-3">{{ __('Stock') }}</th>
@@ -28,8 +29,25 @@
                         @forelse ($variants as $variant)
                             <tr class="bg-white hover:bg-slate-50/50">
                                 <td class="px-4 py-3 font-medium text-slate-900">{{ $variant->sku }}</td>
-                                <td class="px-4 py-3 text-slate-600">
-                                    {{ $variant->attributeValues->map(fn($v) => ($v->attribute?->name ? $v->attribute->name.': ' : '').$v->value)->join(', ') ?: '—' }}
+                                <td class="px-4 py-3">
+                                    <div class="flex items-start gap-2">
+                                        @if($variant->image)
+                                            <img src="{{ asset('storage/' . $variant->image) }}" alt="{{ __('Variant Image') }}" class="h-10 w-10 rounded-lg object-cover ring-1 ring-slate-200" title="{{ __('Variant Image') }}">
+                                        @endif
+                                        <div class="space-y-1">
+                                            @foreach($variant->attributeValues as $attributeValue)
+                                                <div class="flex items-center gap-2">
+                                                    @if($attributeValue->attribute?->code === 'color' && $attributeValue->attribute?->image)
+                                                        <img src="{{ asset('storage/' . $attributeValue->attribute->image) }}" alt="{{ $attributeValue->value }}" class="h-8 w-8 rounded-lg object-cover ring-1 ring-slate-200" title="{{ $attributeValue->value }}">
+                                                    @endif
+                                                    <div>
+                                                        <span class="text-xs text-slate-500">{{ $attributeValue->attribute?->name }}:</span>
+                                                        <span class="text-sm text-slate-700 ml-1">{{ $attributeValue->value }}</span>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
                                 </td>
                                 <td class="px-4 py-3 text-slate-600">{{ $variant->price }}</td>
                                 <td class="px-4 py-3 text-slate-600">{{ $variant->stock }}</td>

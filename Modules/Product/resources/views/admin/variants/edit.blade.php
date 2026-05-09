@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="mx-auto max-w-4xl">
-        <form action="{{ route('admin.products.variants.update', [$product, $variant]) }}" method="post" class="admin-card space-y-5">
+        <form action="{{ route('admin.products.variants.update', [$product, $variant]) }}" method="post" enctype="multipart/form-data" class="admin-card space-y-5">
             @csrf
             @method('PUT')
             @include('product::admin.variants.partials.form', ['variant' => $variant])
