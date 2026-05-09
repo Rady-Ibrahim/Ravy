@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Orders\Http\Controllers\Admin\OrderController;
-
 use Modules\Orders\Http\Controllers\Admin\GovernorateController;
+use Modules\Orders\Http\Controllers\Admin\PromoCodeController;
 
 // Admin routes
 Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(function () {
@@ -14,7 +14,7 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
     Route::put('/orders/{orderNumber}', [OrderController::class, 'update'])->name('orders.update');
     Route::post('/orders/{orderNumber}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
     Route::delete('/orders/{orderNumber}', [OrderController::class, 'destroy'])->name('orders.destroy');
-    
+
     // Governorates routes
     Route::get('/governorates', [GovernorateController::class, 'index'])->name('governorates.index');
     Route::get('/governorates/create', [GovernorateController::class, 'create'])->name('governorates.create');
@@ -23,5 +23,14 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
     Route::put('/governorates/{governorate}', [GovernorateController::class, 'update'])->name('governorates.update');
     Route::delete('/governorates/{governorate}', [GovernorateController::class, 'destroy'])->name('governorates.destroy');
     Route::post('/governorates/{governorate}/toggle', [GovernorateController::class, 'toggleStatus'])->name('governorates.toggle-status');
+
+    // Promo codes routes
+    Route::get('/promo-codes', [PromoCodeController::class, 'index'])->name('promo-codes.index');
+    Route::get('/promo-codes/create', [PromoCodeController::class, 'create'])->name('promo-codes.create');
+    Route::post('/promo-codes', [PromoCodeController::class, 'store'])->name('promo-codes.store');
+    Route::get('/promo-codes/{promoCode}/edit', [PromoCodeController::class, 'edit'])->name('promo-codes.edit');
+    Route::put('/promo-codes/{promoCode}', [PromoCodeController::class, 'update'])->name('promo-codes.update');
+    Route::delete('/promo-codes/{promoCode}', [PromoCodeController::class, 'destroy'])->name('promo-codes.destroy');
+    Route::post('/promo-codes/{promoCode}/toggle', [PromoCodeController::class, 'toggleStatus'])->name('promo-codes.toggle-status');
 });
 

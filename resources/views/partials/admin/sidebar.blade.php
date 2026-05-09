@@ -16,8 +16,9 @@
         ['label' => __('Brands'), 'route' => 'admin.brands.index', 'icon' => 'tag', 'permission' => 'admin.products.view'],
         ['label' => __('Colors'), 'route' => 'admin.colors.index', 'icon' => 'palette', 'permission' => 'admin.products.view'],
         ['label' => __('Sizes'), 'route' => 'admin.sizes.index', 'icon' => 'ruler', 'permission' => 'admin.products.view'],
-        
+
         ['label' => __('Shipping Rates'), 'route' => 'admin.governorates.index', 'icon' => 'truck', 'permission' => null],
+        ['label' => __('Promo Codes'), 'route' => 'admin.promo-codes.index', 'icon' => 'ticket', 'permission' => null],
 
 
     ];
@@ -156,6 +157,10 @@
                 @elseif ($item['icon'] === 'ruler')
                     <svg class="h-5 w-5 shrink-0 opacity-80" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 4.5h17.25M3.375 4.5a1.125 1.125 0 011.125-1.125m0 3.75h17.25a1.125 1.125 0 001.125-1.125m-17.25 0a1.125 1.125 0 011.125-1.125m0 3.75v-4.5m0 4.5a1.125 1.125 0 001.125-1.125m-1.125-1.125v-4.5" />
+                    </svg>
+                @elseif ($item['icon'] === 'ticket')
+                    <svg class="h-5 w-5 shrink-0 opacity-80" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z" />
                     </svg>
                 @endif
                 {{ $item['label'] }}

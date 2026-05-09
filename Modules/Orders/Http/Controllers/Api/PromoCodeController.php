@@ -46,10 +46,10 @@ class PromoCodeController extends Controller
     public function details(Request $request): JsonResponse
     {
         $request->validate([
-            'promo_code' => ['required', 'string', 'max:50']
+            'code' => ['required', 'string', 'max:50']
         ]);
 
-        $promoCode = $this->promoCodeService->getPromoCodeDetails($request->promo_code);
+        $promoCode = $this->promoCodeService->getPromoCodeDetails($request->code);
 
         if (!$promoCode) {
             return response()->json([

@@ -67,7 +67,7 @@ class PromoCode extends Model
     {
         return $query->where(function ($q) {
             $q->whereNull('max_uses')
-              ->orWhere('used_count', '<', 'max_uses');
+              ->orWhereColumn('used_count', '<', 'max_uses');
         });
     }
 

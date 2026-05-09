@@ -38,11 +38,14 @@ class OrderController extends Controller
         ]);
     }
 
-    public function show(Request $request, string $orderNumber): JsonResponse
+    public function show(Request $request, string $identifier): JsonResponse
     {
         $order = Order::query()
             ->where('user_id', $request->user()->id)
-            ->where('order_number', $orderNumber)
+            ->where(function ($query) use ($identifier) {
+                $query->where('id', $identifier)
+                      ->orWhere('order_number', $identifier);
+            })
             ->with('items')
             ->firstOrFail();
 
@@ -51,11 +54,14 @@ class OrderController extends Controller
         ]);
     }
 
-    public function cancel(Request $request, string $orderNumber): JsonResponse
+    public function cancel(Request $request, string $identifier): JsonResponse
     {
         $order = Order::query()
             ->where('user_id', $request->user()->id)
-            ->where('order_number', $orderNumber)
+            ->where(function ($query) use ($identifier) {
+                $query->where('id', $identifier)
+                      ->orWhere('order_number', $identifier);
+            })
             ->firstOrFail();
 
         if (! in_array($order->status, ['pending_payment', 'pending'], true)) {
