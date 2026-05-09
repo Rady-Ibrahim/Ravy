@@ -8,7 +8,7 @@ use Modules\Orders\Http\Controllers\Api\GovernorateController;
 use Modules\Orders\Http\Controllers\Api\PromoCodeController;
 
 // Cart routes - accessible for both authenticated and guest users
-Route::middleware(['api'])->prefix('api/v1')->group(function () {
+Route::middleware(['api', 'optional.sanctum'])->prefix('api/v1')->group(function () {
     Route::get('/cart', [CartController::class, 'show']);
     Route::post('/cart/items', [CartController::class, 'addItem'])->middleware('throttle:20,1');
     Route::patch('/cart/items/{itemId}', [CartController::class, 'updateItem'])->middleware('throttle:30,1');
@@ -24,7 +24,7 @@ Route::middleware(['api'])->prefix('api/v1')->group(function () {
 });
 
 // Checkout - accessible for both authenticated and guest users
-Route::middleware(['api'])->prefix('api/v1')->group(function () {
+Route::middleware(['api', 'optional.sanctum'])->prefix('api/v1')->group(function () {
     Route::get('/checkout/summary', [CheckoutController::class, 'summary']);
     Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->middleware('throttle:10,1');
 });

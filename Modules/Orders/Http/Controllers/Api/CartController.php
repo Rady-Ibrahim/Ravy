@@ -26,7 +26,7 @@ class CartController extends Controller
 
     public function show(Request $request, CartService $service): JsonResponse
     {
-        $user = $request->user();
+        $user = auth('sanctum')->user();
         $guestId = $user ? null : $this->getGuestId($request);
         
         $cart = $service->getActiveCartWithRelations($user, $guestId);
@@ -36,7 +36,7 @@ class CartController extends Controller
 
     public function addItem(AddCartItemRequest $request, CartService $service): JsonResponse
     {
-        $user = $request->user();
+        $user = auth('sanctum')->user();
         $guestId = $user ? null : $this->getGuestId($request);
         
         $cart = $service->addItem($user, $request->validated(), $guestId);
@@ -49,7 +49,7 @@ class CartController extends Controller
 
     public function updateItem(UpdateCartItemRequest $request, int $itemId, CartService $service): JsonResponse
     {
-        $user = $request->user();
+        $user = auth('sanctum')->user();
         $guestId = $user ? null : $this->getGuestId($request);
         
         $cart = $service->updateItemQty($user, $itemId, (int) $request->validated('qty'), $guestId);
@@ -62,7 +62,7 @@ class CartController extends Controller
 
     public function removeItem(Request $request, int $itemId, CartService $service): JsonResponse
     {
-        $user = $request->user();
+        $user = auth('sanctum')->user();
         $guestId = $user ? null : $this->getGuestId($request);
         
         $cart = $service->removeItem($user, $itemId, $guestId);
@@ -75,7 +75,7 @@ class CartController extends Controller
 
     public function clear(Request $request, CartService $service): JsonResponse
     {
-        $user = $request->user();
+        $user = auth('sanctum')->user();
         $guestId = $user ? null : $this->getGuestId($request);
         
         $cart = $service->clear($user, $guestId);
@@ -92,6 +92,7 @@ class CartController extends Controller
             'data' => [
                 'id' => $cart->id,
                 'status' => $cart->status,
+                'user_id' => $cart->user_id,
                 'guest_id' => $guestId,
                 'items' => CartItemResource::collection($cart->items)->resolve(),
                 'totals' => $service->totals($cart),

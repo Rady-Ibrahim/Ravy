@@ -8,6 +8,7 @@ use Illuminate\Validation\ValidationException;
 use Modules\Auth\Models\User;
 use Modules\Orders\Models\Cart;
 use Modules\Orders\Models\CartItem;
+use Modules\Orders\Models\Governorate;
 use Modules\Orders\Models\Order;
 use Modules\Orders\Models\PromoCode;
 use Modules\Product\Models\Product;

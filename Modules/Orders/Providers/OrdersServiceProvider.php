@@ -17,5 +17,8 @@ class OrdersServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'orders');
+        
+        $router = $this->app['router'];
+        $router->aliasMiddleware('optional.sanctum', \Modules\Orders\Http\Middleware\OptionalAuthSanctum::class);
     }
 }

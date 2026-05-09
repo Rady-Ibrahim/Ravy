@@ -31,7 +31,7 @@ class CheckoutController extends Controller
 
     public function summary(Request $request, CartService $service): JsonResponse
     {
-        $user = $request->user();
+        $user = auth('sanctum')->user();
         $guestId = $user ? null : $this->getGuestId($request);
         $promoCode = $request->get('promo_code');
         $governorateId = $request->get('governorate_id');
@@ -53,7 +53,7 @@ class CheckoutController extends Controller
 
     public function placeOrder(CheckoutRequest $request, CartService $service): JsonResponse
     {
-        $user = $request->user();
+        $user = auth('sanctum')->user();
         $guestId = $user ? null : $this->getGuestId($request, $request->input('guest_id'));
         
         $order = $service->checkout($user, $request->validated(), $guestId);
