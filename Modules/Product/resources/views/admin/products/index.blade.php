@@ -88,7 +88,7 @@
                             <th class="px-4 py-3">{{ __('Image') }}</th>
                             <th class="px-4 py-3">{{ __('Brand') }}</th>
                             <th class="px-4 py-3">{{ __('Primary category') }}</th>
-                            <th class="px-4 py-3">{{ __('Price range') }}</th>
+                            <th class="px-4 py-3">{{ __('Price') }}</th>
                             <th class="px-4 py-3">{{ __('Variants') }}</th>
                             <th class="px-4 py-3">{{ __('Views') }}</th>
                             <th class="px-4 py-3">{{ __('Score') }}</th>
@@ -112,11 +112,7 @@
                                 <td class="px-4 py-3 text-slate-600">{{ $product->brand?->name ?? '—' }}</td>
                                 <td class="px-4 py-3 text-slate-600">{{ $product->primaryCategory?->name ?? '—' }}</td>
                                 <td class="px-4 py-3 text-slate-600">
-                                    @if ($product->min_price !== null || $product->max_price !== null)
-                                        {{ $product->min_price ?? '—' }} - {{ $product->max_price ?? '—' }}
-                                    @else
-                                        —
-                                    @endif
+                                    {{ $product->min_price ?? $product->max_price ?? '—' }}
                                 </td>
                                 <td class="px-4 py-3 text-slate-600">{{ $product->variants_count }}</td>
                                 <td class="px-4 py-3 text-slate-600">{{ $product->views_count ?? 0 }}</td>

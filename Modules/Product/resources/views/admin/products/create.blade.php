@@ -63,13 +63,15 @@
                         <div>
                             <label class="block mb-1.5 text-sm font-semibold text-slate-700">{{ __('Additional Categories') }}</label>
                             <select name="category_ids[]" multiple 
-                                class="w-full rounded-xl border border-slate-300 focus:border-slate-500 focus:ring focus:ring-slate-200 px-4 py-3 transition-all h-32">
+                                class="w-full rounded-xl border border-slate-300 focus:border-slate-500 focus:ring focus:ring-slate-200 px-4 py-3 transition-all">
+                                <option value="">{{ __('None') }}</option>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}" @selected(collect(old('category_ids', []))->contains($category->id))>
                                         {{ $category->name }}
                                     </option>
                                 @endforeach
                             </select>
+                            <p class="mt-1 text-xs text-slate-400">{{ __('Hold Ctrl/Cmd to select multiple categories') }}</p>
                         </div>
 
                         <div>

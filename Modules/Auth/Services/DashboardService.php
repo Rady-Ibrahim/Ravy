@@ -2,7 +2,9 @@
 
 namespace Modules\Auth\Services;
 
+use Modules\Auth\Models\User;
 use Modules\Category\Models\Category;
+use Modules\Orders\Models\Order;
 use Modules\Product\Models\Product;
 
 class DashboardService
@@ -13,10 +15,10 @@ class DashboardService
     public function getKpiData(): array
     {
         return [
-            'customers' => 0, // CRM module pending
+            'customers' => User::count(),
             'products' => $this->getTotalProducts(),
-            'orders' => 0, // Orders module pending
-            'revenue' => 0, // Orders module pending
+            'orders' => Order::count(),
+            'revenue' => Order::where('status', 'completed')->sum('grand_total'),
         ];
     }
 
@@ -26,11 +28,11 @@ class DashboardService
     public function getOrdersOverview(): array
     {
         return [
-            'total' => 0, // Orders module pending
-            'pending' => 0,
-            'confirmed' => 0,
-            'processed' => 0,
-            'shipped' => 0,
+            'total' => Order::count(),
+            'pending' => Order::where('status', 'pending')->count(),
+            'confirmed' => Order::where('status', 'confirmed')->count(),
+            'processed' => Order::where('status', 'processed')->count(),
+            'shipped' => Order::where('status', 'shipped')->count(),
         ];
     }
 
