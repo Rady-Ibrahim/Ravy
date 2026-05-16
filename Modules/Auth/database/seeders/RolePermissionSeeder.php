@@ -42,6 +42,10 @@ class RolePermissionSeeder extends Seeder
             'admin.products.create',
             'admin.products.edit',
             'admin.products.delete',
+            'admin.notifications.view',
+            'admin.notifications.create',
+            'admin.notifications.edit',
+            'admin.notifications.delete',
         ];
 
         foreach ($permissions as $name) {

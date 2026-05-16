@@ -26,6 +26,19 @@ class PermissionMatrixService
             ->pluck('name')
             ->all();
 
+        foreach (array_diff($defined, $dbNames) as $missingPermission) {
+            Permission::query()->firstOrCreate([
+                'name' => $missingPermission,
+                'guard_name' => 'web',
+            ]);
+        }
+
+        $dbNames = Permission::query()
+            ->where('guard_name', 'web')
+            ->orderBy('name')
+            ->pluck('name')
+            ->all();
+
         $orphans = array_values(array_diff($dbNames, $defined));
 
         if ($orphans !== []) {
@@ -37,7 +50,7 @@ class PermissionMatrixService
                         'key' => 'other',
                         'label' => 'Not grouped in matrix config',
                         'permissions' => array_map(
-                            fn (string $name) => ['name' => $name, 'label' => $name],
+                            fn(string $name) => ['name' => $name, 'label' => $name],
                             $orphans
                         ),
                     ],

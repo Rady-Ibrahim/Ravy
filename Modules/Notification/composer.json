@@ -1,0 +1,16 @@
+{
+    "name": "modules/Notification",
+    "description": "Notification module",
+    "autoload": {
+        "psr-4": {
+            "Modules\\Notification\\": "./"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Notification\\Providers\\NotificationServiceProvider"
+            ]
+        }
+    }
+}

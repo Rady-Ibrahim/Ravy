@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('carts', function (Blueprint $table) {
-            // Make user_id nullable to support guest carts
-            $table->foreignId('user_id')->nullable()->change();
-            
-            // Add guest_id column for guest cart support
-            $table->string('guest_id')->nullable()->after('user_id')->index();
-        });
+        if (! Schema::hasColumn('carts', 'guest_id')) {
+            Schema::table('carts', function (Blueprint $table) {
+                $table->string('guest_id')->nullable()->after('user_id')->index();
+            });
+        }
     }
 
     /**

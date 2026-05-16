@@ -13,6 +13,7 @@ use Modules\Orders\Models\Order;
 use Modules\Orders\Models\PromoCode;
 use Modules\Product\Models\Product;
 use Modules\Product\Models\Variant;
+use Modules\Orders\Events\OrderPlaced;
 use Modules\Payments\Services\PaymentService;
 
 class CartService
@@ -237,7 +238,7 @@ class CartService
                 'grand_total' => $totals['grand_total'],
                 'currency' => 'EGP',
                 'payment_method' => $payload['payment_method'] ?? null,
-                'source' => $payload['source'] ?? null,
+                'source' => $payload['source'] ?? config('notification.default_order_source', 'website'),
                 'shipping_address_snapshot' => $payload['shipping_address'],
                 'packaging_option' => $payload['packaging_option'] ?? null,
                 'notes' => $payload['notes'] ?? null,
@@ -288,7 +289,11 @@ class CartService
                 }
             }
 
-            return $order->load('items');
+            $order = $order->load('items');
+
+            event(new OrderPlaced($order));
+
+            return $order;
         });
     }
 
