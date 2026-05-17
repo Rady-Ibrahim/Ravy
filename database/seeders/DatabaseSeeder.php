@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Modules\Auth\Database\Seeders\AuthDatabaseSeeder;
 use Modules\Auth\Database\Seeders\RolePermissionSeeder;
 use Modules\Category\Database\Seeders\CategoryDatabaseSeeder;
+use Modules\Notification\Database\Seeders\NotificationDatabaseSeeder;
 use Modules\Product\Database\Seeders\ProductDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -23,6 +24,7 @@ class DatabaseSeeder extends Seeder
             AuthDatabaseSeeder::class,
             CategoryDatabaseSeeder::class,
             ProductDatabaseSeeder::class,
+            NotificationDatabaseSeeder::class,
         ]);
     }
 }

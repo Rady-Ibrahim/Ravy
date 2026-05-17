@@ -29,7 +29,8 @@ class DashboardService
     {
         return [
             'total' => Order::count(),
-            'pending' => Order::where('status', 'pending')->count(),
+            // some orders use 'pending_payment' as default status, include both
+            'pending' => Order::whereIn('status', ['pending', 'pending_payment'])->count(),
             'confirmed' => Order::where('status', 'confirmed')->count(),
             'processed' => Order::where('status', 'processed')->count(),
             'shipped' => Order::where('status', 'shipped')->count(),
@@ -115,5 +116,33 @@ class DashboardService
                 'created_at' => $product->created_at,
             ])
             ->toArray();
+    }
+
+    /**
+     * Get in-house (boutique/pos) channel statistics
+     */
+    public function getInhouseStats(): array
+    {
+        $sources = ['pos', 'boutique', 'inhouse'];
+
+        $inhouseOrdersQuery = Order::query()->whereIn('source', $sources);
+
+        $productIds = \Modules\Orders\Models\OrderItem::query()
+            ->whereIn('order_id', $inhouseOrdersQuery->pluck('id')->toArray())
+            ->distinct()
+            ->pluck('product_id')
+            ->toArray();
+
+        $inhouseRevenue = (float) $inhouseOrdersQuery->where('status', 'completed')->sum('grand_total');
+        $totalRevenue = (float) Order::where('status', 'completed')->sum('grand_total');
+
+        return [
+            'share_pct' => $totalRevenue > 0 ? (int) round($inhouseRevenue / $totalRevenue * 100) : 0,
+            'products' => count(array_filter($productIds)),
+            'avg_score' => Product::whereIn('id', $productIds)->avg('score') ?? 0,
+            'orders_30d' => $inhouseOrdersQuery->where('created_at', '>=', now()->subDays(30))->count(),
+            'orders_total' => $inhouseOrdersQuery->count(),
+            'revenue' => $inhouseRevenue,
+        ];
     }
 }

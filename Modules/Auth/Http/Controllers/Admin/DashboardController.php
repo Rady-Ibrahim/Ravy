@@ -19,7 +19,8 @@ class DashboardController extends AdminController
         $orders = $this->service->getOrdersOverview();
         $categories = $this->service->getTopCategories(3);
         $productsStats = $this->service->getProductsStats();
+        $inhouseStats = $this->service->getInhouseStats();
 
-        return view('admin.dashboard', compact('kpi', 'orders', 'categories', 'productsStats'));
+        return view('admin.dashboard', compact('kpi', 'orders', 'categories', 'productsStats', 'inhouseStats'));
     }
 }

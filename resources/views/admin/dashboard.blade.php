@@ -16,8 +16,8 @@
                 <div>
                     <p class="text-[11px] font-semibold uppercase tracking-wide text-brand-navy/45">
                         {{ __('Total customers') }}</p>
-                    <p class="mt-2 text-3xl font-bold tabular-nums text-brand-navy"
-                        style="font-family: Outfit, sans-serif;">{{ $kpi['customers'] ?? '—' }}</p>
+                    <p class="mt-2 text-3xl font-bold tabular-nums text-brand-navy" style="font-family: Outfit, sans-serif;">
+                        {{ $kpi['customers'] ?? '—' }}</p>
                     <p class="mt-1 text-xs text-brand-navy/40">{{ __('CRM module') }}</p>
                 </div>
                 <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-navy/8 text-brand-navy">
@@ -76,9 +76,9 @@
                     <p class="mt-2 text-2xl font-bold tabular-nums text-brand-navy sm:text-3xl"
                         style="font-family: Outfit, sans-serif;">
                         {{ $kpi['revenue'] ?? '—' }}@if ($kpi['revenue'])
-                            <span class="text-lg font-semibold text-brand-navy/50">ج.م</span>
+                            <span class="text-lg font-semibold text-brand-navy/50">AED</span>
                         @else
-                            <span class="text-sm font-medium text-brand-navy/35">ج.م</span>
+                            <span class="text-sm font-medium text-brand-navy/35">AED</span>
                         @endif
                     </p>
                     <p class="mt-1 text-xs text-brand-navy/40">{{ __('All channels') }}</p>
@@ -171,7 +171,7 @@
                             <div class="flex items-center justify-between gap-2 text-sm">
                                 <span class="font-medium text-brand-navy">{{ $cat['label'] }}</span>
                                 <span class="tabular-nums text-brand-navy/55">{{ $cat['value'] ?? '—' }} @if ($cat['value'])
-                                        <span class="text-xs">ج.م</span>
+                                        <span class="text-xs">AED</span>
                                     @endif
                                 </span>
                             </div>
@@ -206,7 +206,7 @@
                                 <p class="text-[10px] font-semibold uppercase tracking-wide text-brand-navy/45">
                                     {{ __('Share') }}</p>
                                 <p class="text-lg font-bold tabular-nums text-brand-navy"
-                                    style="font-family: Outfit, sans-serif;">—</p>
+                                    style="font-family: Outfit, sans-serif;">{{ $inhouseStats['share_pct'] ?? 0 }}%</p>
                             </div>
                         </div>
                     </div>
@@ -218,92 +218,88 @@
                             <p class="text-[10px] font-semibold uppercase leading-snug text-brand-navy/45">
                                 {{ __('In-house products') }}</p>
                             <p class="mt-1 text-lg font-bold tabular-nums text-brand-navy sm:text-xl"
-                                style="font-family: Outfit, sans-serif;">—</p>
+                                style="font-family: Outfit, sans-serif;">{{ $inhouseStats['products'] ?? '—' }}</p>
                         </div>
                         <div
                             class="min-w-0 rounded-xl border border-brand-navy/10 bg-white px-3 py-2.5 shadow-sm sm:px-4 sm:py-3">
                             <p class="text-[10px] font-semibold uppercase leading-snug text-brand-navy/45">
                                 {{ __('Avg. rating') }}</p>
                             <p class="mt-1 text-lg font-bold tabular-nums text-brand-navy sm:text-xl"
-                                style="font-family: Outfit, sans-serif;">—</p>
+                                style="font-family: Outfit, sans-serif;">
+                                {{ number_format($inhouseStats['avg_score'] ?? 0, 1) }}</p>
                         </div>
                         <div
                             class="col-span-2 min-w-0 rounded-xl border border-brand-navy/10 bg-white px-3 py-2.5 shadow-sm sm:px-4 sm:py-3">
                             <p class="text-[10px] font-semibold uppercase leading-snug text-brand-navy/45">
                                 {{ __('Orders (30d)') }}</p>
                             <p class="mt-1 text-lg font-bold tabular-nums text-brand-navy sm:text-xl"
-                                style="font-family: Outfit, sans-serif;">—</p>
+                                style="font-family: Outfit, sans-serif;">{{ $inhouseStats['orders_30d'] ?? '—' }}</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <a href="#"
-                class="mt-6 flex w-full items-center justify-center rounded-full bg-brand-navy px-4 py-2.5 text-sm font-semibold text-brand-cream transition hover:bg-brand-navy-mid"
-                onclick="return false;">
-                {{ __('In-house orders') }}
+            <a href="{{ route('admin.orders.index', ['source' => 'pos']) }}"
+                class="mt-6 flex w-full items-center justify-center rounded-full bg-brand-navy px-4 py-2.5 text-sm font-semibold text-brand-cream transition hover:bg-brand-navy-mid">
+                {{ __('In-house orders') }} ({{ $inhouseStats['orders_total'] ?? 0 }})
             </a>
         </div>
 
-
-    </div>
-
-            {{-- Sales spotlight + actions: عمودان من sm --}}
-        <div class="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
-            <div class="admin-card min-w-0 border border-brand-navy/[0.07] !p-4 sm:!p-5 {{ $dashShadow }}">
-                <h3 class="admin-section-head">{{ __('Product catalog stats') }}</h3>
-                <p class="admin-section-sub">{{ __('Snapshot of your inventory') }}</p>
-                <div class="mt-6 grid min-w-0 grid-cols-2 gap-3 sm:grid-cols-3">
-                    <div
-                        class="min-w-0 rounded-xl border border-brand-navy/10 bg-white px-3 py-2.5 shadow-sm sm:px-4 sm:py-3">
-                        <p class="text-[10px] font-semibold uppercase leading-snug text-brand-navy/45">{{ __('Total') }}
-                        </p>
-                        <p class="mt-1 text-lg font-bold tabular-nums text-brand-navy sm:text-xl"
-                            style="font-family: Outfit, sans-serif;">{{ $productsStats['total'] ?? 0 }}</p>
-                    </div>
-                    <div
-                        class="min-w-0 rounded-xl border border-emerald-200/70 bg-emerald-50/80 px-3 py-2.5 shadow-sm sm:px-4 sm:py-3">
-                        <p class="text-[10px] font-semibold uppercase leading-snug text-emerald-600">{{ __('Active') }}
-                        </p>
-                        <p class="mt-1 text-lg font-bold tabular-nums text-emerald-700 sm:text-xl"
-                            style="font-family: Outfit, sans-serif;">{{ $productsStats['active'] ?? 0 }}</p>
-                    </div>
-                    <div
-                        class="min-w-0 rounded-xl border border-slate-200/70 bg-slate-50/80 px-3 py-2.5 shadow-sm sm:px-4 sm:py-3">
-                        <p class="text-[10px] font-semibold uppercase leading-snug text-slate-600">{{ __('Inactive') }}
-                        </p>
-                        <p class="mt-1 text-lg font-bold tabular-nums text-slate-700 sm:text-xl"
-                            style="font-family: Outfit, sans-serif;">{{ $productsStats['inactive'] ?? 0 }}</p>
-                    </div>
-                    <div
-                        class="min-w-0 rounded-xl border border-amber-200/70 bg-amber-50/80 px-3 py-2.5 shadow-sm sm:px-4 sm:py-3">
-                        <p class="text-[10px] font-semibold uppercase leading-snug text-amber-600">{{ __('Featured') }}
-                        </p>
-                        <p class="mt-1 text-lg font-bold tabular-nums text-amber-700 sm:text-xl"
-                            style="font-family: Outfit, sans-serif;">{{ $productsStats['featured'] ?? 0 }}</p>
-                    </div>
-                    <div
-                        class="min-w-0 rounded-xl border border-indigo-200/70 bg-indigo-50/80 px-3 py-2.5 shadow-sm sm:px-4 sm:py-3">
-                        <p class="text-[10px] font-semibold uppercase leading-snug text-indigo-600">{{ __('New') }}
-                        </p>
-                        <p class="mt-1 text-lg font-bold tabular-nums text-indigo-700 sm:text-xl"
-                            style="font-family: Outfit, sans-serif;">{{ $productsStats['new'] ?? 0 }}</p>
-                    </div>
-                    <div
-                        class="min-w-0 rounded-xl border border-brand-navy/10 bg-white px-3 py-2.5 shadow-sm sm:px-4 sm:py-3">
-                        <p class="text-[10px] font-semibold uppercase leading-snug text-brand-navy/45">
-                            {{ __('Avg score') }}</p>
-                        <p class="mt-1 text-lg font-bold tabular-nums text-brand-navy sm:text-xl"
-                            style="font-family: Outfit, sans-serif;">
-                            {{ number_format($productsStats['avg_score'] ?? 0, 1) }}</p>
-                    </div>
+        <div class="admin-card min-w-0 border border-brand-navy/[0.07] !p-4 sm:!p-5 {{ $dashShadow }}">
+            <h3 class="admin-section-head">{{ __('Product catalog stats') }}</h3>
+            <p class="admin-section-sub">{{ __('Snapshot of your inventory') }}</p>
+            <div class="mt-6 grid min-w-0 grid-cols-2 gap-3 sm:grid-cols-3">
+                <div class="min-w-0 rounded-xl border border-brand-navy/10 bg-white px-3 py-2.5 shadow-sm sm:px-4 sm:py-3">
+                    <p class="text-[10px] font-semibold uppercase leading-snug text-brand-navy/45">
+                        {{ __('Total') }}
+                    </p>
+                    <p class="mt-1 text-lg font-bold tabular-nums text-brand-navy sm:text-xl"
+                        style="font-family: Outfit, sans-serif;">{{ $productsStats['total'] ?? 0 }}</p>
                 </div>
-                <a href="{{ route('admin.products.index') }}"
-                    class="mt-6 flex w-full items-center justify-center rounded-full bg-brand-navy px-4 py-2.5 text-sm font-semibold text-brand-cream transition hover:bg-brand-navy-mid">
-                    {{ __('Manage products') }}
-                </a>
+                <div
+                    class="min-w-0 rounded-xl border border-emerald-200/70 bg-emerald-50/80 px-3 py-2.5 shadow-sm sm:px-4 sm:py-3">
+                    <p class="text-[10px] font-semibold uppercase leading-snug text-emerald-600">
+                        {{ __('Active') }}
+                    </p>
+                    <p class="mt-1 text-lg font-bold tabular-nums text-emerald-700 sm:text-xl"
+                        style="font-family: Outfit, sans-serif;">{{ $productsStats['active'] ?? 0 }}</p>
+                </div>
+                <div
+                    class="min-w-0 rounded-xl border border-slate-200/70 bg-slate-50/80 px-3 py-2.5 shadow-sm sm:px-4 sm:py-3">
+                    <p class="text-[10px] font-semibold uppercase leading-snug text-slate-600">
+                        {{ __('Inactive') }}
+                    </p>
+                    <p class="mt-1 text-lg font-bold tabular-nums text-slate-700 sm:text-xl"
+                        style="font-family: Outfit, sans-serif;">{{ $productsStats['inactive'] ?? 0 }}</p>
+                </div>
+                <div
+                    class="min-w-0 rounded-xl border border-amber-200/70 bg-amber-50/80 px-3 py-2.5 shadow-sm sm:px-4 sm:py-3">
+                    <p class="text-[10px] font-semibold uppercase leading-snug text-amber-600">
+                        {{ __('Featured') }}
+                    </p>
+                    <p class="mt-1 text-lg font-bold tabular-nums text-amber-700 sm:text-xl"
+                        style="font-family: Outfit, sans-serif;">{{ $productsStats['featured'] ?? 0 }}</p>
+                </div>
+                <div
+                    class="min-w-0 rounded-xl border border-indigo-200/70 bg-indigo-50/80 px-3 py-2.5 shadow-sm sm:px-4 sm:py-3">
+                    <p class="text-[10px] font-semibold uppercase leading-snug text-indigo-600">
+                        {{ __('New') }}
+                    </p>
+                    <p class="mt-1 text-lg font-bold tabular-nums text-indigo-700 sm:text-xl"
+                        style="font-family: Outfit, sans-serif;">{{ $productsStats['new'] ?? 0 }}</p>
+                </div>
+                <div class="min-w-0 rounded-xl border border-brand-navy/10 bg-white px-3 py-2.5 shadow-sm sm:px-4 sm:py-3">
+                    <p class="text-[10px] font-semibold uppercase leading-snug text-brand-navy/45">
+                        {{ __('Avg score') }}</p>
+                    <p class="mt-1 text-lg font-bold tabular-nums text-brand-navy sm:text-xl"
+                        style="font-family: Outfit, sans-serif;">
+                        {{ number_format($productsStats['avg_score'] ?? 0, 1) }}</p>
+                </div>
             </div>
-
-
+            <a href="{{ route('admin.products.index') }}"
+                class="mt-6 flex w-full items-center justify-center rounded-full bg-brand-navy px-4 py-2.5 text-sm font-semibold text-brand-cream transition hover:bg-brand-navy-mid">
+                {{ __('Manage products') }}
+            </a>
         </div>
+    </div>
     </div>
 @endsection

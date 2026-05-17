@@ -5,9 +5,11 @@ namespace Modules\Notification\Channels;
 use Illuminate\Support\Facades\Mail;
 use Modules\Notification\Contracts\ChannelDriverInterface;
 use Modules\Notification\Mail\NewOrderAdminMail;
+use Modules\Notification\Mail\ProductStockLowAdminMail;
 use Modules\Notification\Models\NotificationRecipient;
 use Modules\Notification\Support\NotificationEvents;
 use Modules\Orders\Models\Order;
+use Modules\Product\Models\Variant;
 
 class EmailChannelDriver implements ChannelDriverInterface
 {
@@ -15,6 +17,7 @@ class EmailChannelDriver implements ChannelDriverInterface
     {
         match ($event) {
             NotificationEvents::ORDER_PLACED => $this->sendOrderPlaced($recipient, $payload),
+            NotificationEvents::PRODUCT_STOCK_LOW => $this->sendProductStockLow($recipient, $payload),
             default => null,
         };
     }
@@ -28,5 +31,16 @@ class EmailChannelDriver implements ChannelDriverInterface
         }
 
         Mail::to($recipient->address)->queue(new NewOrderAdminMail($order));
+    }
+
+    private function sendProductStockLow(NotificationRecipient $recipient, array $payload): void
+    {
+        $variant = $payload['variant'] ?? null;
+
+        if (! $variant instanceof Variant) {
+            return;
+        }
+
+        Mail::to($recipient->address)->queue(new ProductStockLowAdminMail($variant));
     }
 }
