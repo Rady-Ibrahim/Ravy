@@ -103,7 +103,7 @@
                                 <td class="px-4 py-3">
                                     @php $coverImage = $product->images->firstWhere('is_primary', true) ?? $product->images->first(); @endphp
                                     @if ($coverImage)
-                                        <img src="{{ asset('storage/' . $coverImage->path) }}" alt=""
+                                        <img src="{{ asset('public/storage/' . $coverImage->path) }}" alt=""
                                             class="h-10 w-10 rounded-lg object-cover ring-1 ring-slate-200">
                                     @else
                                         <span class="text-slate-400">—</span>
@@ -112,7 +112,7 @@
                                 <td class="px-4 py-3 text-slate-600">{{ $product->brand?->name ?? '—' }}</td>
                                 <td class="px-4 py-3 text-slate-600">{{ $product->primaryCategory?->name ?? '—' }}</td>
                                 <td class="px-4 py-3 text-slate-600">
-                                    {{ $product->min_price ?? $product->max_price ?? '—' }}
+                                    {{ $product->min_price ?? ($product->max_price ?? '—') }}
                                 </td>
                                 <td class="px-4 py-3 text-slate-600">{{ $product->variants_count }}</td>
                                 <td class="px-4 py-3 text-slate-600">{{ $product->views_count ?? 0 }}</td>

@@ -55,7 +55,7 @@ class ProductCardResource extends JsonResource
         }
 
         if ($disk === 'public') {
-            return asset('storage/'.$path);
+            return asset('public/storage/' . $path);
         }
 
         return null;

@@ -68,7 +68,7 @@
                             @enderror
                             @if ($size->image)
                                 <div class="mt-2">
-                                    <img src="{{ asset('storage/' . $size->image) }}" alt="{{ $size->name }}"
+                                    <img src="{{ asset('public/storage/' . $size->image) }}" alt="{{ $size->name }}"
                                         class="h-20 w-20 rounded-lg object-cover">
                                     <p class="mt-1 text-xs text-slate-500">{{ __('Current image') }}</p>
                                 </div>

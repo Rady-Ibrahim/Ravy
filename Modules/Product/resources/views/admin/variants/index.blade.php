@@ -35,7 +35,7 @@
                                 <td class="px-4 py-3 font-medium text-slate-900">{{ $variant->sku }}</td>
                                 <td class="px-4 py-3">
                                     @if ($variant->image)
-                                        <img src="{{ asset('storage/' . $variant->image) }}"
+                                        <img src="{{ asset('public/storage/' . $variant->image) }}"
                                             alt="{{ __('Variant Image') }}"
                                             class="h-10 w-10 rounded-lg object-cover ring-1 ring-slate-200"
                                             title="{{ __('Variant Image') }}">
@@ -46,22 +46,31 @@
                                         @foreach ($variant->attributeValues as $attributeValue)
                                             <div class="flex items-center gap-2">
                                                 @if ($attributeValue->attribute?->code === 'color' && $attributeValue->attribute?->image)
-                                                    <img src="{{ asset('storage/' . $attributeValue->attribute->image) }}"
+                                                    <img src="{{ asset('public/storage/' . $attributeValue->attribute->image) }}"
                                                         alt="{{ $attributeValue->value }}"
                                                         class="h-6 w-6 rounded object-cover ring-1 ring-slate-200"
                                                         title="{{ $attributeValue->value }}">
                                                 @endif
                                                 <div>
-                                                    <span class="text-xs text-slate-500">{{ $attributeValue->attribute?->name }}:</span>
-                                                    <span class="text-sm text-slate-700 ml-1">{{ $attributeValue->value }}</span>
+                                                    <span
+                                                        class="text-xs text-slate-500">{{ $attributeValue->attribute?->name }}:</span>
+                                                    <span
+                                                        class="text-sm text-slate-700 ml-1">{{ $attributeValue->value }}</span>
                                                     @php $extra = is_array($attributeValue->extra) ? $attributeValue->extra : (is_string($attributeValue->extra) ? json_decode($attributeValue->extra, true) : []); @endphp
-                                                    @if(!empty($extra['code']) || !empty($extra['code_from']) || !empty($extra['code_to']))
-                                                        <div class="text-xs text-slate-400">Code: {{ $extra['code'] ?? '-' }} @if(!empty($extra['code_from']) || !empty($extra['code_to'])) — Range: {{ $extra['code_from'] ?? '-' }} - {{ $extra['code_to'] ?? '-' }} @endif</div>
+                                                    @if (!empty($extra['code']) || !empty($extra['code_from']) || !empty($extra['code_to']))
+                                                        <div class="text-xs text-slate-400">Code:
+                                                            {{ $extra['code'] ?? '-' }} @if (!empty($extra['code_from']) || !empty($extra['code_to']))
+                                                                — Range: {{ $extra['code_from'] ?? '-' }} -
+                                                                {{ $extra['code_to'] ?? '-' }}
+                                                            @endif
+                                                        </div>
                                                     @endif
-                                                    @if(($extra['hex'] ?? false))
+                                                    @if ($extra['hex'] ?? false)
                                                         <div class="mt-1">
-                                                            <span class="inline-block h-4 w-4 rounded" style="background-color: {{ $extra['hex'] }}; border:1px solid #e2e8f0"></span>
-                                                            <span class="text-xs text-slate-500 ml-2">{{ $extra['hex'] }}</span>
+                                                            <span class="inline-block h-4 w-4 rounded"
+                                                                style="background-color: {{ $extra['hex'] }}; border:1px solid #e2e8f0"></span>
+                                                            <span
+                                                                class="text-xs text-slate-500 ml-2">{{ $extra['hex'] }}</span>
                                                         </div>
                                                     @endif
                                                 </div>

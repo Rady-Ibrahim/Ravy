@@ -38,7 +38,7 @@
                                 <td class="px-4 py-3 font-medium text-slate-900">{{ $category->name }}</td>
                                 <td class="px-4 py-3">
                                     @if ($category->image)
-                                        <img src="{{ asset('storage/' . $category->image) }}" alt=""
+                                        <img src="{{ asset('public/storage/' . $category->image) }}" alt=""
                                             class="h-10 w-10 rounded-lg object-cover ring-1 ring-slate-200">
                                     @else
                                         <span class="text-slate-400">—</span>

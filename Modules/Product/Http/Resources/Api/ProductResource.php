@@ -40,8 +40,8 @@ class ProductResource extends JsonResource
                     'is_active' => (bool) $this->brand->is_active,
                 ];
             }),
-            'primary_category' => $this->whenLoaded('primaryCategory', fn () => $this->primaryCategory ? CategoryResource::make($this->primaryCategory)->resolve() : null),
-            'categories' => $this->whenLoaded('categories', fn () => CategoryResource::collection($this->categories)->resolve()),
+            'primary_category' => $this->whenLoaded('primaryCategory', fn() => $this->primaryCategory ? CategoryResource::make($this->primaryCategory)->resolve() : null),
+            'categories' => $this->whenLoaded('categories', fn() => CategoryResource::collection($this->categories)->resolve()),
             'images' => $this->whenLoaded('images', function (): array {
                 return $this->images->map(function ($image): array {
                     return [
@@ -102,10 +102,9 @@ class ProductResource extends JsonResource
         }
 
         if ($disk === 'public') {
-            return asset('storage/'.$path);
+            return asset('public/storage/' . $path);
         }
 
         return null;
     }
 }
-

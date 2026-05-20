@@ -130,7 +130,7 @@
                                 <input type="file" name="image" accept="image/*" id="image-input"
                                     class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-slate-100 file:text-slate-700 cursor-pointer">
                                 <img id="preview-image"
-                                    @if ($category->image) src="{{ asset('storage/' . $category->image) }}" @else class="hidden" @endif
+                                    @if ($category->image) src="{{ asset('public/storage/' . $category->image) }}" @else class="hidden" @endif
                                     class="mt-3 h-12 w-12 rounded-xl object-cover border border-slate-200 shadow-sm"
                                     alt="Preview">
                             </div>
@@ -141,7 +141,7 @@
                                 <input type="file" name="banner" accept="image/*" id="banner-input"
                                     class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-slate-100 file:text-slate-700 cursor-pointer">
                                 <img id="preview-banner"
-                                    @if ($category->banner) src="{{ asset('storage/' . $category->banner) }}" @else class="hidden" @endif
+                                    @if ($category->banner) src="{{ asset('public/storage/' . $category->banner) }}" @else class="hidden" @endif
                                     class="mt-3 h-12 w-20 rounded-xl object-cover border border-slate-200 shadow-sm"
                                     alt="Preview">
                             </div>
@@ -152,7 +152,7 @@
                                 <input type="file" name="icon" accept="image/*" id="icon-input"
                                     class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-slate-100 file:text-slate-700 cursor-pointer">
                                 <img id="preview-icon"
-                                    @if ($category->icon) src="{{ asset('storage/' . $category->icon) }}" @else class="hidden" @endif
+                                    @if ($category->icon) src="{{ asset('public/storage/' . $category->icon) }}" @else class="hidden" @endif
                                     class="mt-3 h-12 w-12 rounded-xl object-cover border border-slate-200 shadow-sm"
                                     alt="Preview">
                             </div>

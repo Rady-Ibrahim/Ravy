@@ -37,7 +37,7 @@
                             <tr class="bg-white hover:bg-slate-50/50">
                                 <td class="px-4 py-3">
                                     @if ($size->image)
-                                        <img src="{{ asset('storage/' . $size->image) }}" alt="{{ $size->name }}"
+                                        <img src="{{ asset('public/storage/' . $size->image) }}" alt="{{ $size->name }}"
                                             class="h-10 w-10 rounded-lg object-cover">
                                     @else
                                         <div class="h-10 w-10 rounded-lg bg-slate-200 flex items-center justify-center">

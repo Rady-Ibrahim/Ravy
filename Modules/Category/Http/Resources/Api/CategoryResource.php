@@ -32,7 +32,7 @@ class CategoryResource extends JsonResource
             'children_count' => $this->whenCounted('children'),
             'children' => $this->when(
                 $this->relationLoaded('children'),
-                fn (): array => CategoryResource::collection($this->children)->resolve()
+                fn(): array => CategoryResource::collection($this->children)->resolve()
             ),
         ];
     }
@@ -43,6 +43,6 @@ class CategoryResource extends JsonResource
             return null;
         }
 
-        return asset('storage/'.$path);
+        return asset('public/storage/' . $path);
     }
 }
