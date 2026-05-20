@@ -16,6 +16,8 @@ class StoreSizeRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:50|unique:sizes,code',
+            'code_from' => 'nullable|string|max:50',
+            'code_to' => 'nullable|string|max:50',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'sort_order' => 'nullable|integer|min:0',
         ];

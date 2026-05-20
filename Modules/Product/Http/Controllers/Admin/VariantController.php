@@ -32,11 +32,7 @@ class VariantController extends AdminController
 
     public function create(Product $product): View
     {
-        $attributeValues = CategoryAttributeValue::query()
-            ->with('attribute')
-            ->orderBy('attribute_id')
-            ->orderBy('value')
-            ->get();
+        $attributeValues = $this->getAttributeValuesForProduct($product);
 
         return view('product::admin.variants.create', compact('product', 'attributeValues'));
     }
@@ -66,11 +62,7 @@ class VariantController extends AdminController
     {
         abort_unless((int) $variant->product_id === (int) $product->id, 404);
         $variant->load('attributeValues');
-        $attributeValues = CategoryAttributeValue::query()
-            ->with('attribute')
-            ->orderBy('attribute_id')
-            ->orderBy('value')
-            ->get();
+        $attributeValues = $this->getAttributeValuesForProduct($product, $variant);
 
         return view('product::admin.variants.edit', compact('product', 'variant', 'attributeValues'));
     }
@@ -110,5 +102,33 @@ class VariantController extends AdminController
         $variant->delete();
 
         return redirect()->route('admin.products.variants.index', $product)->with('status', __('Variant deleted successfully.'));
+    }
+
+    private function getAttributeValuesForProduct(Product $product, ?Variant $variant = null)
+    {
+        $selectedIds = $variant?->attributeValues?->pluck('id')->all() ?? [];
+        // Determine relevant category IDs for the product (primary + assigned categories)
+        $categoryIds = collect()
+            ->when($product->primary_category_id, fn($c) => $c->push($product->primary_category_id))
+            ->merge($product->categories()->pluck('categories.id'))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        $query = CategoryAttributeValue::query()->with('attribute');
+
+        if (! empty($categoryIds)) {
+            $query->whereHas('attribute', function ($q) use ($categoryIds) {
+                $q->whereIn('category_id', $categoryIds);
+            });
+        }
+
+        if (! empty($selectedIds)) {
+            // ensure existing selected values are included even if they belong to other categories
+            $query->orWhereIn('id', $selectedIds);
+        }
+
+        return $query->orderBy('attribute_id')->orderBy('value')->get();
     }
 }

@@ -9,6 +9,8 @@ class Size extends Model
     protected $fillable = [
         'name',
         'code',
+        'code_from',
+        'code_to',
         'image',
         'sort_order',
     ];

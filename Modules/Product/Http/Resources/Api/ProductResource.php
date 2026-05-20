@@ -81,6 +81,11 @@ class ProductResource extends JsonResource
                                     'value' => $value->value,
                                     'slug' => $value->slug,
                                     'extra' => $value->extra,
+                                    // convenience fields for frontend
+                                    'code' => $value->extra['code'] ?? null,
+                                    'code_from' => $value->extra['code_from'] ?? null,
+                                    'code_to' => $value->extra['code_to'] ?? null,
+                                    'hex' => $value->extra['hex'] ?? null,
                                 ];
                             })->values()->all()
                             : [],

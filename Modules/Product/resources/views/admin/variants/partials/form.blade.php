@@ -48,9 +48,24 @@
                 <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $groupName }}</p>
                 <div class="flex flex-wrap gap-2">
                     @foreach ($values as $value)
+                        @php
+                            $extra = is_array($value->extra) ? $value->extra : (is_string($value->extra) ? json_decode($value->extra, true) : []);
+                        @endphp
                         <label class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-sm text-slate-700">
                             <input type="checkbox" name="attribute_value_ids[]" value="{{ $value->id }}" @checked(in_array((int) $value->id, $selectedValues, true)) class="rounded border-slate-300 text-slate-900 focus:ring-slate-500">
-                            {{ $value->value }}
+                            <span>{{ $value->value }}</span>
+                            @if(!empty($extra['code']) || !empty($extra['code_from']) || !empty($extra['code_to']))
+                                <span class="ml-2 text-xs text-slate-500">Code: {{ $extra['code'] ?? '-' }}</span>
+                                @if(!empty($extra['code_from']) || !empty($extra['code_to']))
+                                    <span class="ml-1 text-xs text-slate-400">({{ $extra['code_from'] ?? '-' }} - {{ $extra['code_to'] ?? '-' }})</span>
+                                @endif
+                            @endif
+                            @if(($extra['hex'] ?? false))
+                                <span class="ml-2 inline-flex items-center">
+                                    <span class="inline-block h-4 w-4 rounded" style="background-color: {{ $extra['hex'] }}; border:1px solid #e2e8f0"></span>
+                                    <span class="ml-2 text-xs text-slate-500">{{ $extra['hex'] }}</span>
+                                </span>
+                            @endif
                         </label>
                     @endforeach
                 </div>

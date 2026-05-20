@@ -44,13 +44,47 @@ class OrderController extends Controller
             ->where('user_id', $request->user()->id)
             ->where(function ($query) use ($identifier) {
                 $query->where('id', $identifier)
-                      ->orWhere('order_number', $identifier);
+                    ->orWhere('order_number', $identifier);
             })
-            ->with('items')
+            ->with(['items.variant.attributeValues.attribute', 'items.product.primaryCategory', 'items.product.images'])
             ->firstOrFail();
 
         return response()->json([
             'data' => OrderResource::make($order)->resolve(),
+        ]);
+    }
+
+    public function showPublic(Request $request, ?string $identifier = null): JsonResponse
+    {
+        // لغينا الـ validation تماماً بناءً على طلبك
+        $identifier = $identifier ?: $request->input('identifier');
+
+        // تجهيز الاستعلام مع كل العلاقات المطلوبة (المنتجات، الصور، الألوان، والمقاسات)
+        $query = Order::query()->with([
+            'items.variant.attributeValues.attribute',
+            'items.product.primaryCategory',
+            'items.product.images'
+        ]);
+
+        // إذا تم تمرير معرف (ID أو رقم طلب)
+        if ($identifier) {
+            $query->where(function ($q) use ($identifier) {
+                $q->where('id', $identifier)
+                    ->orWhere('order_number', $identifier);
+            });
+
+            $order = $query->firstOrFail();
+
+            return response()->json([
+                'data' => OrderResource::make($order)->resolve(),
+            ]);
+        }
+
+        // إذا لم يتم تمرير أي شيء، نرجع كل الطلبات
+        $orders = $query->latest()->get();
+
+        return response()->json([
+            'data' => OrderResource::collection($orders)->resolve(),
         ]);
     }
 
@@ -60,7 +94,7 @@ class OrderController extends Controller
             ->where('user_id', $request->user()->id)
             ->where(function ($query) use ($identifier) {
                 $query->where('id', $identifier)
-                      ->orWhere('order_number', $identifier);
+                    ->orWhere('order_number', $identifier);
             })
             ->firstOrFail();
 

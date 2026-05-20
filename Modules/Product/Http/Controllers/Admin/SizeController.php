@@ -3,10 +3,13 @@
 namespace Modules\Product\Http\Controllers\Admin;
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Modules\Auth\Http\Controllers\Admin\AdminController;
 use Modules\Product\Http\Requests\Admin\StoreSizeRequest;
 use Modules\Product\Http\Requests\Admin\UpdateSizeRequest;
+use Modules\Product\Models\CategoryAttribute;
+use Modules\Product\Models\CategoryAttributeValue;
 use Modules\Product\Models\Size;
 
 class SizeController extends AdminController
@@ -33,13 +36,14 @@ class SizeController extends AdminController
     public function store(StoreSizeRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        
+
         // Handle image upload
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('sizes', 'public');
         }
-        
-        Size::query()->create($data);
+
+        $size = Size::query()->create($data);
+        $this->syncSizeToAttributeValues($size);
 
         return redirect()->route('admin.sizes.index')->with('status', __('Size created successfully.'));
     }
@@ -52,7 +56,7 @@ class SizeController extends AdminController
     public function update(UpdateSizeRequest $request, Size $size): RedirectResponse
     {
         $data = $request->validated();
-        
+
         // Handle image upload
         if ($request->hasFile('image')) {
             // Delete old image if exists
@@ -64,8 +68,9 @@ class SizeController extends AdminController
             }
             $data['image'] = $request->file('image')->store('sizes', 'public');
         }
-        
+
         $size->update($data);
+        $this->syncSizeToAttributeValues($size);
 
         return redirect()->route('admin.sizes.index')->with('status', __('Size updated successfully.'));
     }
@@ -79,9 +84,32 @@ class SizeController extends AdminController
                 unlink($imagePath);
             }
         }
-        
+
         $size->delete();
 
         return redirect()->route('admin.sizes.index')->with('status', __('Size deleted successfully.'));
+    }
+
+    private function syncSizeToAttributeValues(Size $size): void
+    {
+        $slug = Str::slug($size->code ?: $size->name, '_');
+
+        $sizeAttributes = CategoryAttribute::query()
+            ->where('code', 'size')
+            ->get();
+
+        foreach ($sizeAttributes as $attribute) {
+            CategoryAttributeValue::query()->updateOrCreate(
+                ['attribute_id' => $attribute->id, 'slug' => $slug],
+                [
+                    'value' => $size->name,
+                    'extra' => [
+                        'code' => $size->code,
+                        'code_from' => $size->code_from,
+                        'code_to' => $size->code_to,
+                    ],
+                ]
+            );
+        }
     }
 }

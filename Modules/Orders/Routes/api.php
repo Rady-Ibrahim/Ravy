@@ -35,9 +35,15 @@ Route::middleware(['api'])->prefix('api/v1')->group(function () {
     Route::get('/promo-codes/details', [PromoCodeController::class, 'details'])->middleware('throttle:10,1');
 });
 
+
 // Orders - require authentication
 Route::middleware(['api', 'auth:sanctum'])->prefix('api/v1')->group(function () {
     Route::get('/orders', [OrderController::class, 'index']);
     Route::get('/orders/{identifier}', [OrderController::class, 'show']);
     Route::post('/orders/{identifier}/cancel', [OrderController::class, 'cancel'])->middleware('throttle:10,1');
+});
+
+// Public order details endpoint for mobile dashboard (no token required)
+Route::middleware(['api'])->prefix('api/v1')->group(function () {
+    Route::get('/ordersForMobile/{identifier?}', [OrderController::class, 'showPublic']);
 });
