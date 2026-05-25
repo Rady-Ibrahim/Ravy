@@ -105,8 +105,8 @@ class SizeController extends AdminController
                     'value' => $size->name,
                     'extra' => [
                         'code' => $size->code,
-                        'code_from' => $size->code_from,
-                        'code_to' => $size->code_to,
+                        'code_from' => $size->code_from ?? null,
+                        'code_to' => $size->code_to ?? null,
                     ],
                 ]
             );

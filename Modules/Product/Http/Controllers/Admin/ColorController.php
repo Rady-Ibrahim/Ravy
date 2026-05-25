@@ -3,10 +3,13 @@
 namespace Modules\Product\Http\Controllers\Admin;
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Modules\Auth\Http\Controllers\Admin\AdminController;
 use Modules\Product\Http\Requests\Admin\StoreColorRequest;
 use Modules\Product\Http\Requests\Admin\UpdateColorRequest;
+use Modules\Product\Models\CategoryAttribute;
+use Modules\Product\Models\CategoryAttributeValue;
 use Modules\Product\Models\Color;
 
 class ColorController extends AdminController
@@ -33,13 +36,14 @@ class ColorController extends AdminController
     public function store(StoreColorRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        
+
         // Handle image upload
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('colors', 'public');
         }
-        
-        Color::query()->create($data);
+
+        $color = Color::query()->create($data);
+        $this->syncColorToAttributeValues($color);
 
         return redirect()->route('admin.colors.index')->with('status', __('Color created successfully.'));
     }
@@ -52,7 +56,7 @@ class ColorController extends AdminController
     public function update(UpdateColorRequest $request, Color $color): RedirectResponse
     {
         $data = $request->validated();
-        
+
         // Handle image upload
         if ($request->hasFile('image')) {
             // Delete old image if exists
@@ -64,8 +68,9 @@ class ColorController extends AdminController
             }
             $data['image'] = $request->file('image')->store('colors', 'public');
         }
-        
+
         $color->update($data);
+        $this->syncColorToAttributeValues($color);
 
         return redirect()->route('admin.colors.index')->with('status', __('Color updated successfully.'));
     }
@@ -79,9 +84,31 @@ class ColorController extends AdminController
                 unlink($imagePath);
             }
         }
-        
+
         $color->delete();
 
         return redirect()->route('admin.colors.index')->with('status', __('Color deleted successfully.'));
+    }
+
+    private function syncColorToAttributeValues(Color $color): void
+    {
+        $slug = Str::slug($color->code ?: $color->name, '_');
+
+        $colorAttributes = CategoryAttribute::query()
+            ->where('code', 'color')
+            ->get();
+
+        foreach ($colorAttributes as $attribute) {
+            CategoryAttributeValue::query()->updateOrCreate(
+                ['attribute_id' => $attribute->id, 'slug' => $slug],
+                [
+                    'value' => $color->name,
+                    'extra' => [
+                        'code' => $color->code,
+                        'hex' => $color->hex,
+                    ],
+                ]
+            );
+        }
     }
 }
